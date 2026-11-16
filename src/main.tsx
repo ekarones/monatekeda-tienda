@@ -58,7 +58,10 @@ const router = createBrowserRouter([
       },
     ],
   },
-])
+], {
+  // '/' en cPanel; '/monatekeda-tienda/' en GitHub Pages (lo fija VITE_BASE al compilar)
+  basename: import.meta.env.BASE_URL.replace(/\/$/, '') || '/',
+})
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>

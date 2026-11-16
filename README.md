@@ -60,6 +60,10 @@ PRODUCT.md          contexto del negocio y del público
 - El hero usa la foto de estudio + un recorte de sus productos (`hero-centro-cut.webp`) para que la palabra "monatekeda" quede detrás de las piezas. Si se cambia la foto, hay que regenerar el recorte.
 - La portada hace 10 pedidos a la API al cargar (límite: 120/min por IP).
 
+## GitHub Pages
+
+Cada `git push` a `main` publica la tienda en **https://ekarones.github.io/monatekeda-tienda/** mediante `.github/workflows/pages.yml` (compila con `VITE_BASE=/<repositorio>/` y copia `index.html` como `404.html` para que funcionen rutas como `/productos`). El `config.js` publicado es el de `public/config.js` del repositorio.
+
 ## Deploy (cPanel)
 
 1. Compilar y empaquetar: `npm run build` y luego `C:\Windows\System32\tar.exe -a -c -f deploy/monatekeda-tienda.zip -C dist .htaccess assets config.js index.html logo.png` (el tar de Windows; el de Git Bash no crea .zip)

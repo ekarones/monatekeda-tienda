@@ -429,7 +429,7 @@ function Footer() {
       <div className="mx-auto grid max-w-[1360px] gap-12 px-4 pt-16 pb-10 sm:px-8 lg:grid-cols-12 lg:gap-8 lg:pt-20">
         <div className="lg:col-span-4">
           <Link to="/" className="inline-flex items-center gap-3" aria-label={`${config.storeName}, inicio`}>
-            <img src="/logo.png" alt="" width={44} height={44} className="h-11 w-11" />
+            <img src={`${import.meta.env.BASE_URL}logo.png`} alt="" width={44} height={44} className="h-11 w-11" />
             <span className="text-[1.625rem] font-semibold tracking-[-0.03em]">{config.storeName}</span>
           </Link>
           {config.storeTagline && (
@@ -569,7 +569,7 @@ export function Layout() {
           }`}
         >
           <Link to="/" className="flex shrink-0 items-center gap-2.5 justify-self-start" aria-label={`${config.storeName}, inicio`}>
-            <img src="/logo.png" alt="" width={40} height={40} className="h-8 w-8 sm:h-10 sm:w-10" />
+            <img src={`${import.meta.env.BASE_URL}logo.png`} alt="" width={40} height={40} className="h-8 w-8 sm:h-10 sm:w-10" />
             <span className="text-[1.25rem] font-semibold tracking-[-0.02em] text-ink sm:text-[1.375rem]">
               {config.storeName}
             </span>
