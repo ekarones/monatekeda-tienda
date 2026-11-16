@@ -1,0 +1,443 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-11-16T00:12:00.253Z",
+  "title": "Design System: Monatekeda",
+  "extensions": {
+    "colorMeta": {
+      "brand-600": {
+        "role": "primary",
+        "displayName": "Logo Red",
+        "canonical": "#d02c16",
+        "tonalRamp": [
+          "#8c1c0c",
+          "#b02410",
+          "#d02c16",
+          "#e5341d",
+          "#f0917c",
+          "#fadbd2",
+          "#fdf0ec",
+          "#fff8f6"
+        ]
+      },
+      "brand-700": {
+        "role": "primary",
+        "displayName": "Deep Logo Red",
+        "canonical": "#b02410",
+        "tonalRamp": [
+          "#8c1c0c",
+          "#b02410",
+          "#d02c16",
+          "#e5341d",
+          "#f0917c",
+          "#fadbd2",
+          "#fdf0ec",
+          "#fff8f6"
+        ]
+      },
+      "brand-muted": {
+        "role": "primary",
+        "displayName": "Muted Clay Red (large text only)",
+        "canonical": "#a8695f",
+        "tonalRamp": [
+          "#4a2a25",
+          "#6b3d36",
+          "#8a5249",
+          "#a8695f",
+          "#bf8a81",
+          "#d4aca5",
+          "#e7d0cc",
+          "#f5ebe9"
+        ]
+      },
+      "brand-50": {
+        "role": "primary",
+        "displayName": "Red Blush",
+        "canonical": "#fdf0ec"
+      },
+      "brand-100": {
+        "role": "primary",
+        "displayName": "Red Selection",
+        "canonical": "#fadbd2"
+      },
+      "brand-300": {
+        "role": "primary",
+        "displayName": "Red 300 (reserved)",
+        "canonical": "#f0917c"
+      },
+      "brand-500": {
+        "role": "primary",
+        "displayName": "Logo Red, as drawn (reserved)",
+        "canonical": "#e5341d"
+      },
+      "brand-800": {
+        "role": "primary",
+        "displayName": "Red 800 (reserved)",
+        "canonical": "#8c1c0c"
+      },
+      "ground": {
+        "role": "neutral",
+        "displayName": "Cool Mist Ground",
+        "canonical": "#e9eaec",
+        "tonalRamp": [
+          "#17162b",
+          "#45435a",
+          "#5f5d70",
+          "#b6b8bf",
+          "#d4d5da",
+          "#dfe0e3",
+          "#e9eaec",
+          "#ffffff"
+        ]
+      },
+      "surface": {
+        "role": "neutral",
+        "displayName": "White",
+        "canonical": "#ffffff"
+      },
+      "sunk": {
+        "role": "neutral",
+        "displayName": "Recessed Grey",
+        "canonical": "#dfe0e3"
+      },
+      "line": {
+        "role": "neutral",
+        "displayName": "Hairline",
+        "canonical": "#d4d5da"
+      },
+      "line-strong": {
+        "role": "neutral",
+        "displayName": "Strong Hairline",
+        "canonical": "#b6b8bf"
+      },
+      "ink": {
+        "role": "neutral",
+        "displayName": "Night Ink",
+        "canonical": "#17162b"
+      },
+      "ink-2": {
+        "role": "neutral",
+        "displayName": "Slate Ink",
+        "canonical": "#45435a"
+      },
+      "ink-3": {
+        "role": "neutral",
+        "displayName": "Quiet Ink",
+        "canonical": "#5f5d70"
+      },
+      "hero": {
+        "role": "neutral",
+        "displayName": "Hero Grey",
+        "canonical": "#dfe1e6",
+        "purpose": "Home hero background, the header while at the top of the home page, and the search block left rule. Matches the studio backdrop of the hero photo."
+      }
+    },
+    "typographyMeta": {
+      "wordmark": {
+        "displayName": "Wordmark",
+        "purpose": "Store name, white at 45%, stretched 1.6x vertically, between the hero photo and its product cut-out. 7% white in the closing panel, 6% in the footer. Decorative, aria-hidden."
+      },
+      "display-light": {
+        "displayName": "Display, light",
+        "purpose": "First line of the hero headline, in Muted Clay Red."
+      },
+      "display-bold": {
+        "displayName": "Display, bold",
+        "purpose": "Second line of the hero headline, in Deep Logo Red."
+      },
+      "headline": {
+        "displayName": "Headline",
+        "purpose": "Two-tone section titles: light muted red with one bold red word."
+      },
+      "lede": {
+        "displayName": "Lede",
+        "purpose": "Hero tagline with material keywords in semibold red (1.5rem mobile, 1.75rem desktop)."
+      },
+      "title": {
+        "displayName": "Title",
+        "purpose": "Material tile names; list headings such as Por material at 1.375rem."
+      },
+      "body": {
+        "displayName": "Body",
+        "purpose": "Copy, product names (500), prose at 68ch."
+      },
+      "label": {
+        "displayName": "Label",
+        "purpose": "Buttons, nav, chips, index links."
+      },
+      "price": {
+        "displayName": "Price",
+        "purpose": "Tabular lining figures for prices."
+      },
+      "caption": {
+        "displayName": "Caption",
+        "purpose": "The Imagen ilustrativa pill and fine print."
+      },
+      "stat": {
+        "displayName": "Stat",
+        "purpose": "Hero figures in the red stat cards; tabular; counts up on first view."
+      },
+      "card-name": {
+        "displayName": "Card name",
+        "purpose": "Product names in cards, semibold, two-line clamp."
+      }
+    },
+    "shadows": [
+      {
+        "name": "card-rest",
+        "value": "0 16px 34px -26px rgb(23 22 43 / 0.45)",
+        "purpose": "Product, pick and category cards at rest."
+      },
+      {
+        "name": "card-hover",
+        "value": "0 26px 44px -24px rgb(23 22 43 / 0.5)",
+        "purpose": "Card hover, with a 4px lift."
+      },
+      {
+        "name": "red-card",
+        "value": "0 18px 36px -18px rgb(140 28 12 / 0.6)",
+        "purpose": "Stat cards and the red catalogue card."
+      },
+      {
+        "name": "header-scrolled",
+        "value": "0 12px 30px -22px rgb(23 22 43 / 0.45)",
+        "purpose": "Header once the page scrolls (90% white + blur)."
+      },
+      {
+        "name": "panel-drop",
+        "value": "0 30px 60px -28px rgb(23 22 43 / 0.45)",
+        "purpose": "Catalogue mega-panel and search panel."
+      },
+      {
+        "name": "cutout-drop",
+        "value": "drop-shadow(0 30px 40px rgb(60 8 2 / 0.45))",
+        "purpose": "Collection photo rising out of the closing panel."
+      },
+      {
+        "name": "red-hover-glow",
+        "value": "0 8px 20px -10px rgb(176 36 16 / 0.6)",
+        "purpose": "Primary button hover."
+      },
+      {
+        "name": "dark-hover-glow",
+        "value": "0 8px 20px -10px rgb(23 22 43 / 0.6)",
+        "purpose": "Dark button hover."
+      }
+    ],
+    "motion": [
+      {
+        "name": "ease-out-expo",
+        "value": "cubic-bezier(0.16, 1, 0.3, 1)",
+        "purpose": "The single easing curve for every transition and animation."
+      },
+      {
+        "name": "line-rise",
+        "value": "1000ms, 130ms stagger",
+        "purpose": "Hero headline lines rise out of masks."
+      },
+      {
+        "name": "stage-in",
+        "value": "1400ms fade + 24px rise + 0.985 scale",
+        "purpose": "Hero photo, wordmark and cut-out enter as one block so the wordmark never shows through."
+      },
+      {
+        "name": "mark-letter",
+        "value": "55ms stagger",
+        "purpose": "Wordmark letters rise one by one."
+      },
+      {
+        "name": "count-up",
+        "value": "1400ms, quartic ease-out",
+        "purpose": "Stat figures count from 0 on first view."
+      },
+      {
+        "name": "reveal / cascade",
+        "value": "800ms, 50-70ms steps",
+        "purpose": "Scroll reveals start visible and hide only once armed."
+      },
+      {
+        "name": "reveal-media",
+        "value": "1200ms clip-path wipe",
+        "purpose": "Material photos uncover from the bottom."
+      },
+      {
+        "name": "coverflow",
+        "value": "700ms transform; 4.5s autoplay",
+        "purpose": "3D carousel step; autoplay pauses on hover/focus/off-screen, stops on interaction."
+      },
+      {
+        "name": "drop-in",
+        "value": "420ms",
+        "purpose": "Header search panel."
+      },
+      {
+        "name": "bump",
+        "value": "420ms scale 1.35",
+        "purpose": "Cart count when a piece is added."
+      },
+      {
+        "name": "reduced-motion",
+        "value": "none",
+        "purpose": "All animation removed; final state shown."
+      }
+    ],
+    "breakpoints": [
+      {
+        "name": "sm",
+        "value": "640px"
+      },
+      {
+        "name": "md",
+        "value": "768px"
+      },
+      {
+        "name": "lg",
+        "value": "1024px"
+      },
+      {
+        "name": "xl",
+        "value": "1280px"
+      }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary Pill Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "Logo Red pill for single page-level actions.",
+      "html": "<button class=\"ds-btn\">Explorar piezas <span aria-hidden=\"true\">→</span></button>",
+      "css": ".ds-btn{display:inline-flex;align-items:center;gap:.5rem;min-height:3rem;padding:0 1.25rem;border:0;border-radius:9999px;background:#d02c16;color:#fff;font:550 .9375rem 'Geist Variable','Geist',ui-sans-serif,system-ui,sans-serif;cursor:pointer;transition:background-color 200ms cubic-bezier(.16,1,.3,1),box-shadow 200ms} .ds-btn:hover{background:#b02410;box-shadow:0 8px 20px -10px rgb(176 36 16/.6)}.ds-btn:focus-visible{outline:2px solid #d02c16;outline-offset:3px}"
+    },
+    {
+      "name": "Dark Pill Button",
+      "kind": "button",
+      "refersTo": "button-dark",
+      "description": "Night Ink secondary action in the hero.",
+      "html": "<button class=\"ds-btn-dark\">Ver categorías</button>",
+      "css": ".ds-btn-dark{display:inline-flex;align-items:center;gap:.5rem;min-height:3rem;padding:0 1.25rem;border:0;border-radius:9999px;background:#17162b;color:#fff;font:550 .9375rem 'Geist Variable','Geist',ui-sans-serif,system-ui,sans-serif;cursor:pointer}.ds-btn-dark:hover{background:#2a2944;box-shadow:0 8px 20px -10px rgb(23 22 43/.6)}"
+    },
+    {
+      "name": "Ghost Pill Button",
+      "kind": "button",
+      "refersTo": "button-ghost",
+      "description": "See-all links and secondary actions.",
+      "html": "<button class=\"ds-btn-ghost\">Ver todo el catálogo</button>",
+      "css": ".ds-btn-ghost{display:inline-flex;align-items:center;min-height:2.75rem;padding:0 1.25rem;border:0;border-radius:9999px;background:transparent;color:#17162b;box-shadow:inset 0 0 0 1px #b6b8bf;font:550 .9375rem 'Geist Variable','Geist',ui-sans-serif,system-ui,sans-serif;cursor:pointer}.ds-btn-ghost:hover{background:#fff;box-shadow:inset 0 0 0 1px #17162b}"
+    },
+    {
+      "name": "Product Card",
+      "kind": "card",
+      "refersTo": "product-card",
+      "description": "White card, square photo, category, name, red price and a round add button.",
+      "html": "<article class=\"ds-pc\"><div class=\"ds-pc-ph\"></div><p class=\"ds-pc-cat\">Pulseras</p><h3 class=\"ds-pc-name\">Pulsera Eslabón</h3><div class=\"ds-pc-row\"><span class=\"ds-pc-price\">S/ 285.00</span><button class=\"ds-pc-btn\" aria-label=\"Agregar\">+</button></div></article>",
+      "css": ".ds-pc{width:15rem;padding:.5rem;border-radius:1.25rem;background:#fff;box-shadow:0 16px 34px -26px rgb(23 22 43/.45);font-family:'Geist Variable','Geist',ui-sans-serif,system-ui,sans-serif;transition:transform 500ms cubic-bezier(.16,1,.3,1),box-shadow 500ms} .ds-pc:hover{transform:translateY(-4px);box-shadow:0 26px 44px -24px rgb(23 22 43/.5)}.ds-pc-ph{aspect-ratio:1;border-radius:.875rem;background:#dfe0e3} .ds-pc-cat{margin:.75rem .5rem 0;font-size:.75rem;color:#5f5d70}.ds-pc-name{margin:.125rem .5rem 0;font-size:1rem;font-weight:600;color:#17162b} .ds-pc-row{display:flex;justify-content:space-between;align-items:center;margin:.75rem .5rem .5rem}.ds-pc-price{font-weight:600;color:#b02410;font-variant-numeric:tabular-nums} .ds-pc-btn{width:2.5rem;height:2.5rem;border:0;border-radius:9999px;background:#d02c16;color:#fff;font-size:1.25rem;cursor:pointer}"
+    },
+    {
+      "name": "Stat Card",
+      "kind": "card",
+      "refersTo": "stat-card",
+      "description": "Red translucent figure card from the hero staircase.",
+      "html": "<div class=\"ds-stat\"><span class=\"ds-stat-ic\"></span><b>+3000</b><span>productos</span></div>",
+      "css": ".ds-stat{display:flex;flex-direction:column;align-items:flex-start;width:9.5rem;padding:.875rem;border-radius:1.25rem;background:rgb(176 36 16/.9);color:#fff;font-family:'Geist Variable','Geist',ui-sans-serif,system-ui,sans-serif;box-shadow:0 18px 36px -18px rgb(140 28 12/.6)} .ds-stat-ic{width:2.25rem;height:2.25rem;border-radius:9999px;background:#fff;margin-bottom:.75rem}.ds-stat b{font-size:1.875rem;letter-spacing:-.03em;line-height:1}.ds-stat span:last-child{margin-top:.25rem;font-size:.8125rem;opacity:.85}"
+    },
+    {
+      "name": "Header Blocks",
+      "kind": "navigation",
+      "refersTo": "header-search-block",
+      "description": "White search field block and red cart block, square and flush to the right edge at full header height.",
+      "html": "<div class=\"ds-hb\"><label class=\"ds-hb-s\"><span>⌕</span><input placeholder=\"Buscar…\"></label><a class=\"ds-hb-c\">Carrito</a></div>",
+      "css": ".ds-hb{display:flex;height:4.5rem;justify-content:flex-end;background:#dfe1e6;font-family:'Geist Variable','Geist',ui-sans-serif,system-ui,sans-serif} .ds-hb-s{display:flex;align-items:center;gap:.75rem;width:13rem;padding:0 1.25rem;background:#fff;box-shadow:inset 1px 0 0 #dfe1e6;color:#5f5d70} .ds-hb-s input{border:0;outline:0;min-width:0;font:500 .9375rem 'Geist Variable','Geist',ui-sans-serif,system-ui,sans-serif}.ds-hb-c{display:flex;align-items:center;justify-content:center;width:10.5rem;background:#d02c16;color:#fff;font-weight:600}"
+    },
+    {
+      "name": "Filter Pills",
+      "kind": "chip",
+      "refersTo": "filter-pill",
+      "description": "Material filter; active pill in Night Ink.",
+      "html": "<div class=\"ds-fp\"><button aria-selected=\"true\">Todo</button><button>Platería</button><button>Alpaca</button></div>",
+      "css": ".ds-fp{display:flex;gap:.5rem}.ds-fp button{min-height:2.75rem;padding:0 1rem;border:0;border-radius:9999px;background:#fff;color:#45435a;font:500 .9375rem 'Geist Variable','Geist',ui-sans-serif,system-ui,sans-serif;cursor:pointer} .ds-fp button[aria-selected=true]{background:#17162b;color:#fff;box-shadow:0 10px 22px -14px rgb(23 22 43/.7)}"
+    },
+    {
+      "name": "Two-Tone Heading",
+      "kind": "typography",
+      "refersTo": "headline",
+      "description": "Section heading: light Muted Clay Red with one bold Deep Logo Red word.",
+      "html": "<h2 class=\"ds-h\">Restauramos tu <b>platería</b></h2>",
+      "css": ".ds-h{margin:0;font:300 3rem/1.02 'Geist Variable','Geist',ui-sans-serif,system-ui,sans-serif;letter-spacing:-.04em;color:#a8695f}.ds-h b{font-weight:700;color:#b02410}"
+    },
+    {
+      "name": "Closing Panel",
+      "kind": "container",
+      "refersTo": "closing-panel",
+      "description": "Rounded Deep Logo Red panel with statement, light and outline-light buttons.",
+      "html": "<div class=\"ds-cp\"><p>Piezas de Lima y <b>Puno</b>, en un solo lugar.</p><button>Explorar piezas</button></div>",
+      "css": ".ds-cp{padding:2.5rem;border-radius:2rem;background:#b02410;color:#fff;font-family:'Geist Variable','Geist',ui-sans-serif,system-ui,sans-serif}.ds-cp p{margin:0 0 1.5rem;font-size:2.5rem;font-weight:300;letter-spacing:-.04em;line-height:1}.ds-cp b{font-weight:600} .ds-cp button{min-height:3.25rem;padding:0 1.75rem;border:0;border-radius:9999px;background:#fff;color:#b02410;font:550 1rem 'Geist Variable','Geist',ui-sans-serif,system-ui,sans-serif}"
+    }
+  ],
+  "narrative": {
+    "northStar": "Escaparate de estudio",
+    "overview": "A studio still life of real Peruvian crafts behind the store name written enormous in translucent white, on cool grey, in the logo red. Cards, figures and a material index float over the photo; below, categories, a 3D top-products carousel, material tiles, a silver-restoration service, a filterable grid of available pieces, a red closing panel and a dark footer.",
+    "keyCharacteristics": [
+      "Cool grey page with a matching hero grey that the header shares at the top of the home page.",
+      "Wordmark layered between the hero photo and a cut-out of its products.",
+      "One brand red: action fill, red text and fields, muted red-grey for light display lines.",
+      "Geist light against bold; no italics; no eyebrow labels.",
+      "White cards with offset soft shadows, concentric radii, no borders.",
+      "Square full-height search (white) and cart (red) blocks at the header right edge.",
+      "Generated photos labelled \"Imagen ilustrativa\"."
+    ],
+    "rules": [
+      {
+        "name": "The One Red Rule",
+        "section": "colors",
+        "body": "The logo red is the only interface hue, always at full strength; WhatsApp green only on WhatsApp actions."
+      },
+      {
+        "name": "The Large-Red-Grey Rule",
+        "section": "colors",
+        "body": "Muted Clay Red only at lede size or larger."
+      },
+      {
+        "name": "The Hero-Grey Seam Rule",
+        "section": "colors",
+        "body": "Anything touching the hero photo backdrop uses #dfe1e6 exactly."
+      },
+      {
+        "name": "The Two-Weight Heading Rule",
+        "section": "typography",
+        "body": "Light muted red plus one bold red word that carries the meaning."
+      },
+      {
+        "name": "The Upright Type Rule",
+        "section": "typography",
+        "body": "No italic or oblique type anywhere."
+      },
+      {
+        "name": "The No-Kicker Rule",
+        "section": "typography",
+        "body": "No uppercase letter-spaced labels above headings."
+      },
+      {
+        "name": "The Wordmark-Behind Rule",
+        "section": "layout",
+        "body": "The wordmark sits between the studio photo and its product cut-out; the three enter as one block."
+      }
+    ],
+    "dos": [
+      "Use Hero Grey wherever something meets the hero photograph.",
+      "Regenerate the product cut-out whenever the hero photo changes.",
+      "Write section headings in two weights.",
+      "Use white cards with offset soft shadows and concentric radii.",
+      "Label every generated photo \"Imagen ilustrativa\".",
+      "Show real API numbers; keep owner figures as given.",
+      "Start every reveal from a visible default, with a reduced-motion fallback."
+    ],
+    "donts": [
+      "Set body or small text in Muted Clay Red.",
+      "Add a second accent hue or red gradients.",
+      "Use italics, a second typeface or kicker labels.",
+      "Use zero-offset glows, hard offset shadows or card borders.",
+      "Add glass beyond the hero cards.",
+      "Invent artisans, testimonials, certifications or service details."
+    ]
+  }
+}

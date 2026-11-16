@@ -1,0 +1,36 @@
+# Monatekeda — tienda (SPA de React) en Apache / cPanel
+
+Options -MultiViews -Indexes
+
+# --- Rutas de la SPA: toda URL que no sea un archivo real va a index.html ---
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  RewriteBase /
+  RewriteRule ^index\.html$ - [L]
+  RewriteCond %{REQUEST_FILENAME} !-f
+  RewriteCond %{REQUEST_FILENAME} !-d
+  RewriteRule . /index.html [L]
+</IfModule>
+
+# --- Compresión ---
+<IfModule mod_deflate.c>
+  AddOutputFilterByType DEFLATE text/html text/css application/javascript text/javascript application/json image/svg+xml
+</IfModule>
+
+# --- Caché: los archivos de assets/ llevan hash en el nombre, se guardan 1 año.
+#     index.html y config.js nunca se cachean, así los cambios se ven al instante. ---
+<IfModule mod_headers.c>
+  <If "%{REQUEST_URI} =~ m#^/assets/#">
+    Header set Cache-Control "public, max-age=31536000, immutable"
+  </If>
+  <FilesMatch "^(index\.html|config\.js)$">
+    Header set Cache-Control "no-cache, must-revalidate"
+  </FilesMatch>
+  Header always set X-Content-Type-Options "nosniff"
+  Header always set Referrer-Policy "strict-origin-when-cross-origin"
+</IfModule>
+
+<IfModule mod_mime.c>
+  AddType image/webp .webp
+  AddType font/woff2 .woff2
+</IfModule>

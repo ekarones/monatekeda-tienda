@@ -1,0 +1,370 @@
+@import 'tailwindcss';
+@import '@fontsource-variable/geist/wght.css';
+
+/*
+ * Mundo "Revelado de pieza": fondo gris claro y frío, el nombre de la tienda enorme en
+ * blanco detrás de todo, una pieza a escala monumental y un solo color de marca
+ * (el rojo del logo) usado a plena fuerza. Una sola familia: Geist, sin itálicas.
+ */
+@theme {
+  --font-sans: 'Geist Variable', 'Geist', ui-sans-serif, system-ui, sans-serif;
+
+  --color-ground: #e9eaec;
+  /* Fondo del hero de la portada; la cabecera lo toma mientras está arriba del todo */
+  --color-hero: #dfe1e6;
+  --color-surface: #ffffff;
+  --color-sunk: #dfe0e3;
+  --color-line: #d4d5da;
+  --color-line-strong: #b6b8bf;
+  --color-ink: #17162b;
+  --color-ink-2: #45435a;
+  --color-ink-3: #5f5d70;
+
+  /* Rojo apagado: la línea clara del titular (contraste ≥3:1 a gran tamaño) */
+  --color-brand-muted: #a8695f;
+
+  /* Rojo del logo: el único color de acción */
+  --color-brand-50: #fdf0ec;
+  --color-brand-100: #fadbd2;
+  --color-brand-300: #f0917c;
+  --color-brand-500: #e5341d;
+  --color-brand-600: #d02c16;
+  --color-brand-700: #b02410;
+  --color-brand-800: #8c1c0c;
+
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+html {
+  -webkit-tap-highlight-color: transparent;
+  scrollbar-color: var(--color-line-strong) var(--color-ground);
+}
+
+body {
+  background: var(--color-ground);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+  font-size: 1rem;
+  caret-color: var(--color-brand-600);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+::selection {
+  background: var(--color-brand-100);
+  color: var(--color-ink);
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-brand-600);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+a {
+  text-underline-offset: 0.2em;
+  text-decoration-thickness: 1px;
+}
+
+.tnum {
+  font-variant-numeric: tabular-nums lining-nums;
+}
+
+/* ---- Botones ---- */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  min-height: 2.75rem;
+  padding: 0 1.25rem;
+  border-radius: 0.5rem;
+  background: var(--color-brand-600);
+  color: #fff;
+  font-weight: 550;
+  font-size: 0.9375rem;
+  letter-spacing: -0.005em;
+  transition:
+    background-color 200ms var(--ease-out-expo),
+    transform 200ms var(--ease-out-expo),
+    box-shadow 200ms var(--ease-out-expo);
+}
+.btn:hover:not(:disabled) {
+  background: var(--color-brand-700);
+  box-shadow: 0 8px 20px -10px rgb(176 36 16 / 0.6);
+}
+.btn:active:not(:disabled) {
+  transform: translateY(1px);
+}
+.btn:disabled {
+  background: var(--color-sunk);
+  color: var(--color-ink-3);
+  cursor: not-allowed;
+}
+.btn--lg {
+  min-height: 3.25rem;
+  padding: 0 1.75rem;
+  font-size: 1rem;
+}
+.btn--ghost {
+  background: transparent;
+  color: var(--color-ink);
+  box-shadow: inset 0 0 0 1px var(--color-line-strong);
+}
+.btn--ghost:hover:not(:disabled) {
+  background: var(--color-surface);
+  box-shadow: inset 0 0 0 1px var(--color-ink);
+}
+
+/* ---- Movimiento ---- */
+
+/* Titulares: cada línea sube desde detrás de su máscara */
+@keyframes line-rise {
+  from {
+    transform: translateY(105%);
+  }
+}
+.line-mask {
+  display: block;
+  /* Recorta solo en vertical (la subida de la línea); en horizontal el titular puede exceder su columna */
+  overflow: hidden;
+  overflow-x: visible;
+  overflow-y: clip;
+  padding-bottom: 0.08em;
+  margin-bottom: -0.08em;
+}
+.line-mask > span {
+  display: inline-block;
+  animation: line-rise 1000ms var(--ease-out-expo) both;
+  animation-delay: var(--d, 0ms);
+}
+
+@keyframes fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+}
+.fade-up {
+  animation: fade-up 900ms var(--ease-out-expo) both;
+  animation-delay: var(--d, 0ms);
+}
+
+/* La pieza aparece en la luz: de un leve desenfoque a nítida */
+@keyframes object-in {
+  from {
+    opacity: 0;
+    filter: blur(14px);
+    transform: translateY(24px) scale(0.97);
+  }
+}
+.object-in {
+  animation: object-in 1400ms var(--ease-out-expo) both;
+  animation-delay: var(--d, 0ms);
+}
+/* Entrada del fondo del hero (foto · palabra · recorte como un solo bloque): sin blur, que en una capa
+   de este tamaño es costoso y puede dejar el bloque sin pintar mientras anima */
+@keyframes stage-in {
+  from {
+    opacity: 0;
+    transform: translateY(24px) scale(0.985);
+  }
+}
+.stage-in {
+  animation: stage-in 1400ms var(--ease-out-expo) both;
+  animation-delay: var(--d, 0ms);
+}
+
+/*
+ * Revelado al hacer scroll. Por defecto TODO es visible; solo se oculta mientras
+ * useReveal lo tiene "armado" (data-armed) y aún no entró en pantalla (data-in).
+ */
+.reveal,
+.cascade > * {
+  transition:
+    opacity 800ms var(--ease-out-expo),
+    transform 800ms var(--ease-out-expo);
+  transition-delay: var(--d, 0ms);
+}
+.reveal[data-armed='true']:not([data-in='true']) {
+  opacity: 0;
+  transform: translateY(28px);
+}
+/* Rejillas: los hijos llegan en cascada (cada uno con su --d) */
+.cascade[data-armed='true']:not([data-in='true']) > * {
+  opacity: 0;
+  transform: translateY(24px);
+}
+/*
+ * Fotos: se descubren de abajo hacia arriba. El observador va en el contenedor
+ * (sin recorte): sobre el propio elemento recortado nunca "entra" en pantalla.
+ */
+.reveal-media {
+  clip-path: inset(0 0 0 0 round 1rem);
+  transition: clip-path 1200ms var(--ease-out-expo);
+  transition-delay: var(--d, 0ms);
+}
+[data-armed='true']:not([data-in='true']) .reveal-media {
+  clip-path: inset(100% 0 0 0 round 1rem);
+}
+
+@keyframes bump {
+  40% {
+    transform: scale(1.35);
+  }
+}
+.bump {
+  animation: bump 420ms var(--ease-out-expo);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .line-mask > span,
+  .fade-up,
+  .object-in,
+  .stage-in,
+  .bump {
+    animation: none;
+  }
+  .reveal,
+  .reveal-media {
+    opacity: 1;
+    transform: none;
+    clip-path: none;
+    transition: none;
+  }
+}
+
+
+/* Botón de contorno blanco sobre superficies rojas u oscuras */
+.btn--outline-light {
+  background: transparent;
+  color: #fff;
+  box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.4);
+}
+.btn--outline-light:hover:not(:disabled) {
+  background: rgb(255 255 255 / 0.1);
+  box-shadow: inset 0 0 0 1px #fff;
+}
+
+/* La colección del banner sube al entrar en pantalla */
+.reveal-rise {
+  transition:
+    transform 1400ms var(--ease-out-expo),
+    opacity 900ms var(--ease-out-expo);
+  transition-delay: 150ms;
+}
+[data-armed='true']:not([data-in='true']) .reveal-rise {
+  opacity: 0;
+  transform: translateY(70px) scale(0.96);
+}
+@media (prefers-reduced-motion: reduce) {
+  .reveal-rise {
+    transition: none;
+    opacity: 1;
+    transform: none;
+  }
+}
+
+
+/* Panel de búsqueda de la cabecera */
+@keyframes drop-in {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+}
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+}
+/* El anillo lo dibuja la cápsula que envuelve al campo; el campo no lleva el suyo */
+.search-field:focus-visible {
+  outline: none;
+}
+.search-field::-webkit-search-cancel-button {
+  filter: grayscale(1);
+}
+.drop-in {
+  animation: drop-in 420ms var(--ease-out-expo) both;
+}
+.fade-in {
+  animation: fade-in 300ms ease-out both;
+}
+@media (prefers-reduced-motion: reduce) {
+  .drop-in,
+  .fade-in {
+    animation: none;
+  }
+}
+
+/* Descripción en markdown del producto */
+.prose-store {
+  color: var(--color-ink-2);
+  line-height: 1.65;
+  max-width: 68ch;
+}
+.prose-store > * + * {
+  margin-top: 0.75rem;
+}
+.prose-store h1,
+.prose-store h2,
+.prose-store h3 {
+  font-weight: 600;
+  color: var(--color-ink);
+}
+.prose-store ul {
+  list-style: disc;
+  padding-left: 1.25rem;
+}
+.prose-store ol {
+  list-style: decimal;
+  padding-left: 1.25rem;
+}
+.prose-store a {
+  color: var(--color-brand-700);
+  text-decoration: underline;
+}
+
+/* Letras del nombre de fondo: suben una a una al cargar */
+@keyframes mark-rise {
+  from {
+    opacity: 0;
+    transform: translateY(35%);
+  }
+}
+.mark-letter {
+  display: inline-block;
+  animation: mark-rise 1200ms var(--ease-out-expo) both;
+  animation-delay: var(--d, 0ms);
+}
+@media (prefers-reduced-motion: reduce) {
+  .mark-letter {
+    animation: none;
+  }
+}
+
+/* Botón claro para fondos de marca (rojo) */
+.btn--light {
+  background: #fff;
+  color: var(--color-brand-700);
+}
+.btn--light:hover:not(:disabled) {
+  background: var(--color-brand-50);
+  box-shadow: 0 8px 20px -10px rgb(0 0 0 / 0.35);
+}
+
+/* Botón píldora (hero): misma forma que buscador, chips y redes */
+.btn--pill {
+  border-radius: 9999px;
+}
+
+/* Botón oscuro (secundario del hero): contrasta con el rojo y se lee sobre la foto */
+.btn--dark {
+  background: var(--color-ink);
+  color: #fff;
+}
+.btn--dark:hover:not(:disabled) {
+  background: #2a2944;
+  box-shadow: 0 8px 20px -10px rgb(23 22 43 / 0.6);
+}
