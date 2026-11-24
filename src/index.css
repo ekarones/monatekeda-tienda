@@ -6,12 +6,21 @@
  * blanco detrás de todo, una pieza a escala monumental y un solo color de marca
  * (el rojo del logo) usado a plena fuerza. Una sola familia: Geist, sin itálicas.
  */
+:root {
+  /* Misma trama en blanco, para fondos rojos (hero) */
+  --andean-tile-light: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120' viewBox='0 0 120 120'%3E%3Cg opacity='0.09'%3E%3Cpath d='M58.0 28h4v4h4v4h4v4h4v4h4v4h4v4h4v4h4v4h-4v4h-4v4h-4v4h-4v4h-4v4h-4v4h-4v4h-4v-4h-4v-4h-4v-4h-4v-4h-4v-4h-4v-4h-4v-4h-4v-4h4v-4h4v-4h4v-4h4v-4h4v-4h4v-4h4v-4Z' fill='none' stroke='%23ffffff' stroke-width='1.4'/%3E%3Cpath d='M58.0 44h4v4h4v4h4v4h4v4h-4v4h-4v4h-4v4h-4v-4h-4v-4h-4v-4h-4v-4h4v-4h4v-4h4v-4Z' fill='none' stroke='%23ffffff' stroke-width='1.4'/%3E%3Crect x='57' y='57' width='6' height='6' fill='%23ffffff'/%3E%3Cpath d='M-2.0 -16h4v4h4v4h4v4h4v4h-4v4h-4v4h-4v4h-4v-4h-4v-4h-4v-4h-4v-4h4v-4h4v-4h4v-4Z' fill='none' stroke='%23ffffff' stroke-width='1.4'/%3E%3Cpath d='M118.0 -16h4v4h4v4h4v4h4v4h-4v4h-4v4h-4v4h-4v-4h-4v-4h-4v-4h-4v-4h4v-4h4v-4h4v-4Z' fill='none' stroke='%23ffffff' stroke-width='1.4'/%3E%3Cpath d='M-2.0 104h4v4h4v4h4v4h4v4h-4v4h-4v4h-4v4h-4v-4h-4v-4h-4v-4h-4v-4h4v-4h4v-4h4v-4Z' fill='none' stroke='%23ffffff' stroke-width='1.4'/%3E%3Cpath d='M118.0 104h4v4h4v4h4v4h4v4h-4v4h-4v4h-4v4h-4v-4h-4v-4h-4v-4h-4v-4h4v-4h4v-4h4v-4Z' fill='none' stroke='%23ffffff' stroke-width='1.4'/%3E%3Crect x='58' y='-2' width='4' height='4' fill='%23ffffff'/%3E%3Crect x='58' y='118' width='4' height='4' fill='%23ffffff'/%3E%3Crect x='-2' y='58' width='4' height='4' fill='%23ffffff'/%3E%3Crect x='118' y='58' width='4' height='4' fill='%23ffffff'/%3E%3C/g%3E%3C/svg%3E");
+  /* Trama andina (rombos escalonados con "ojos"), compartida por la página y el hero */
+  --andean-tile: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120' viewBox='0 0 120 120'%3E%3Cg opacity='0.055'%3E%3Cpath d='M58.0 28h4v4h4v4h4v4h4v4h4v4h4v4h4v4h4v4h-4v4h-4v4h-4v4h-4v4h-4v4h-4v4h-4v4h-4v-4h-4v-4h-4v-4h-4v-4h-4v-4h-4v-4h-4v-4h-4v-4h4v-4h4v-4h4v-4h4v-4h4v-4h4v-4h4v-4Z' fill='none' stroke='%2317162b' stroke-width='1.4'/%3E%3Cpath d='M58.0 44h4v4h4v4h4v4h4v4h-4v4h-4v4h-4v4h-4v-4h-4v-4h-4v-4h-4v-4h4v-4h4v-4h4v-4Z' fill='none' stroke='%2317162b' stroke-width='1.4'/%3E%3Crect x='57' y='57' width='6' height='6' fill='%2317162b'/%3E%3Cpath d='M-2.0 -16h4v4h4v4h4v4h4v4h-4v4h-4v4h-4v4h-4v-4h-4v-4h-4v-4h-4v-4h4v-4h4v-4h4v-4Z' fill='none' stroke='%2317162b' stroke-width='1.4'/%3E%3Cpath d='M118.0 -16h4v4h4v4h4v4h4v4h-4v4h-4v4h-4v4h-4v-4h-4v-4h-4v-4h-4v-4h4v-4h4v-4h4v-4Z' fill='none' stroke='%2317162b' stroke-width='1.4'/%3E%3Cpath d='M-2.0 104h4v4h4v4h4v4h4v4h-4v4h-4v4h-4v4h-4v-4h-4v-4h-4v-4h-4v-4h4v-4h4v-4h4v-4Z' fill='none' stroke='%2317162b' stroke-width='1.4'/%3E%3Cpath d='M118.0 104h4v4h4v4h4v4h4v4h-4v4h-4v4h-4v4h-4v-4h-4v-4h-4v-4h-4v-4h4v-4h4v-4h4v-4Z' fill='none' stroke='%2317162b' stroke-width='1.4'/%3E%3Crect x='58' y='-2' width='4' height='4' fill='%2317162b'/%3E%3Crect x='58' y='118' width='4' height='4' fill='%2317162b'/%3E%3Crect x='-2' y='58' width='4' height='4' fill='%2317162b'/%3E%3Crect x='118' y='58' width='4' height='4' fill='%2317162b'/%3E%3C/g%3E%3C/svg%3E");
+}
+
 @theme {
   --font-sans: 'Geist Variable', 'Geist', ui-sans-serif, system-ui, sans-serif;
 
   --color-ground: #e9eaec;
   /* Fondo del hero de la portada; la cabecera lo toma mientras está arriba del todo */
   --color-hero: #dfe1e6;
+  /* Pie de página: un tono de gris más profundo que la página */
+  --color-footer: #d8dadf;
   --color-surface: #ffffff;
   --color-sunk: #dfe0e3;
   --color-line: #d4d5da;
@@ -296,6 +305,26 @@ a {
   .fade-in {
     animation: none;
   }
+}
+
+
+/* Fondo de la página: textura de tejido andino (retícula de rombos escalonados con "ojos"),
+   derivada del corazón escalonado del logo. Muy tenue: se nota como trama, no como dibujo. */
+.andean-ground {
+  background-color: var(--color-ground);
+  background-image: var(--andean-tile);
+  background-size: 120px 120px;
+  background-position: center top;
+}
+/* Trama blanca para el hero rojo */
+.andean-tex-light {
+  background-image: var(--andean-tile-light);
+  background-size: 120px 120px;
+}
+/* La misma trama sin color de fondo, para capas que van encima (hero) */
+.andean-tex {
+  background-image: var(--andean-tile);
+  background-size: 120px 120px;
 }
 
 /* Descripción en markdown del producto */

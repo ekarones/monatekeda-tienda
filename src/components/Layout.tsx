@@ -4,7 +4,8 @@ import { ApiError } from '../api/client'
 import { useCategories } from '../api/store'
 import { config } from '../config'
 import { cartCount, useCart } from '../store/cart'
-import { SocialLinks } from './HeroExtras'
+import { StepBand, StepDiamondField } from './Andean'
+import { SocialLinks, WhatsAppGlyph } from './HeroExtras'
 import { CartIcon, CategoryIcon, SearchIcon } from './Ornaments'
 import { StoreUnavailable } from './States'
 import { WhatsAppFab } from './WhatsAppFab'
@@ -183,7 +184,7 @@ function CartButton({ className = '' }: { className?: string }) {
   return (
     <Link
       to="/carrito"
-      className={`absolute top-0 right-0 flex aspect-square items-center justify-center gap-2.5 bg-brand-600 text-[0.9375rem] font-semibold text-white transition-colors hover:bg-brand-700 xl:aspect-auto xl:w-[10.5rem] ${className}`}
+      className={`absolute top-0 right-0 flex aspect-square items-center justify-center gap-4 bg-brand-600 text-[0.9375rem] font-semibold text-white transition-colors hover:bg-brand-700 xl:aspect-auto xl:w-[10.5rem] ${className}`}
       aria-label={`Carrito, ${count} ${count === 1 ? 'pieza' : 'piezas'}`}
     >
       <span className="relative flex">
@@ -216,8 +217,8 @@ const Arrow = ({ size = 16 }: { size?: number }) => (
 )
 
 const linkClass = (isActive: boolean) =>
-  `relative flex items-center gap-1 rounded-full px-3 py-2 text-[0.9375rem] transition-colors after:absolute after:inset-x-3 after:-bottom-0.5 after:h-0.5 after:rounded-full after:bg-brand-600 after:transition-transform after:duration-300 hover:text-brand-600 hover:after:scale-x-100 ${
-    isActive ? 'font-semibold text-brand-700 after:scale-x-100' : 'text-brand-700 after:scale-x-0'
+  `relative flex items-center gap-1 rounded-full px-3 py-2 text-[0.9375rem] transition-colors after:absolute after:inset-x-3 after:-bottom-0.5 after:h-0.5 after:rounded-full after:bg-brand-600 after:transition-transform after:duration-300 hover:text-brand-600 hover:after:scale-x-100 group-data-[onred=true]/h:text-white/85 group-data-[onred=true]/h:after:bg-white group-data-[onred=true]/h:hover:text-white ${
+    isActive ? 'font-semibold text-brand-700 after:scale-x-100 group-data-[onred=true]/h:text-white' : 'text-brand-700 after:scale-x-0'
   }`
 
 /**
@@ -263,7 +264,7 @@ function CatalogMenu() {
           aria-label={open ? 'Cerrar categorías' : 'Ver categorías'}
           // Con el mouse el panel ya se abrió al pasar; el clic no lo cierra. Con teclado (detail 0) alterna.
           onClick={(e) => setOpen((o) => (e.detail === 0 ? !o : true))}
-          className="-ml-2 flex h-8 w-6 items-center justify-center rounded-full text-brand-700 hover:text-brand-600"
+          className="-ml-2 flex h-8 w-6 items-center justify-center rounded-full text-brand-700 hover:text-brand-600 group-data-[onred=true]/h:text-white"
         >
           <svg
             viewBox="0 0 16 16"
@@ -355,7 +356,7 @@ function MobileNav() {
         aria-expanded={open}
         aria-controls="menu-movil"
         aria-label={open ? 'Cerrar menú' : 'Abrir menú'}
-        className="flex h-10 w-10 items-center justify-center rounded-full text-ink hover:bg-sunk"
+        className="flex h-10 w-10 items-center justify-center rounded-full text-ink hover:bg-sunk group-data-[onred=true]/h:text-white group-data-[onred=true]/h:hover:bg-white/10"
       >
         <svg viewBox="0 0 24 24" width={22} height={22} aria-hidden="true">
           <path
@@ -415,110 +416,145 @@ function MobileNav() {
   )
 }
 
-/** Pie de página: marca y redes, navegación, categorías y contacto; la marca de agua al cierre. */
+/**
+ * Pie de página en gris (un tono más profundo que la página): marca y frase, tarjeta blanca de contacto
+ * por WhatsApp, enlaces en tres columnas, redes, y el nombre en blanco a todo el ancho como un relieve.
+ */
 function Footer() {
   const categories = useCategories().data ?? []
   const wa = config.whatsappNumber
     ? `https://wa.me/${config.whatsappNumber}?text=${encodeURIComponent(`¡Hola ${config.storeName}! Tengo una consulta.`)}`
     : ''
-  const heading = 'text-[0.8125rem] font-medium text-white/55'
-  const item = 'inline-block py-1.5 text-[0.9375rem] sm:py-1 text-white/85 transition-colors hover:text-white'
+  // "51912968105" → "+51 912 968 105"
+  const phone = config.whatsappNumber.replace(/^(\d{2})(\d{3})(\d{3})(\d{3})$/, '+$1 $2 $3 $4')
+  const heading = 'text-[0.8125rem] font-semibold text-ink'
+  const item = 'inline-block py-1.5 text-[0.9375rem] text-ink-2 transition-colors hover:text-brand-700 sm:py-1'
 
   return (
-    <footer className="relative isolate mt-28 overflow-hidden bg-ink text-white lg:mt-36">
-      <div className="mx-auto grid max-w-[1360px] gap-12 px-4 pt-16 pb-10 sm:px-8 lg:grid-cols-12 lg:gap-8 lg:pt-20">
-        <div className="lg:col-span-4">
-          <Link to="/" className="inline-flex items-center gap-3" aria-label={`${config.storeName}, inicio`}>
-            <img src={`${import.meta.env.BASE_URL}logo.png`} alt="" width={44} height={44} className="h-11 w-11" />
-            <span className="text-[1.625rem] font-semibold tracking-[-0.03em]">{config.storeName}</span>
-          </Link>
-          {config.storeTagline && (
-            <p className="mt-4 max-w-[28ch] text-[1.0625rem] leading-snug text-white/70">{config.storeTagline}</p>
-          )}
-          <SocialLinks tone="dark" className="mt-7" />
-        </div>
-
-        <nav aria-label="Tienda" className="lg:col-span-2">
-          <p className={heading}>Tienda</p>
-          <ul className="mt-3 space-y-1">
-            {NAV.map((l) => (
-              <li key={l.to}>
-                <Link to={l.to} className={item}>
-                  {l.label}
-                </Link>
-              </li>
-            ))}
-            <li>
-              <Link to="/carrito" className={item}>
-                Carrito
-              </Link>
-            </li>
-          </ul>
-        </nav>
-
-        <nav aria-label="Categorías" className="lg:col-span-3">
-          <p className={heading}>Categorías</p>
-          <ul className="mt-3 grid grid-cols-2 gap-x-6 gap-y-1 lg:grid-cols-1">
-            {categories.slice(0, 7).map((c) => (
-              <li key={c.id}>
-                <Link to={`/productos?categoria=${c.id}`} className={item}>
-                  {c.name}
-                </Link>
-              </li>
-            ))}
-            <li>
-              <Link to="/productos" className={`${item} font-medium text-white`}>
-                Ver todo →
-              </Link>
-            </li>
-          </ul>
-        </nav>
-
-        <div className="lg:col-span-3">
-          <p className={heading}>Pedidos y consultas</p>
-          <p className="mt-3 max-w-[30ch] text-[0.9375rem] leading-relaxed text-white/75">
-            Arma tu pedido en el carrito y envíalo por WhatsApp, o escríbenos para consultar disponibilidad.
-          </p>
-          {wa ? (
-            <a
-              href={wa}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="btn btn--pill mt-5 bg-[#25D366] px-5 text-[#062a14] hover:bg-[#1fbd5a]"
-            >
-              Escribir por WhatsApp
-            </a>
-          ) : (
-            <Link to="/contacto" className="btn btn--pill btn--outline-light mt-5 px-5">
-              Ir a contacto
-              <Arrow size={14} />
+    <footer className="relative isolate mt-28 overflow-hidden rounded-t-[2rem] bg-footer text-ink lg:mt-36 lg:rounded-t-[2.5rem]">
+      <StepDiamondField className="-z-10 text-ink/[0.025]" />
+      <div className="mx-auto max-w-[1360px] px-4 pt-14 sm:px-8 lg:pt-20">
+        {/* Fila superior: marca a la izquierda, contacto a la derecha */}
+        <div className="grid gap-10 lg:grid-cols-12 lg:items-end lg:gap-8">
+          <div className="lg:col-span-6">
+            <Link to="/" className="inline-flex items-center gap-3" aria-label={`${config.storeName}, inicio`}>
+              <img src={`${import.meta.env.BASE_URL}logo.png`} alt="" width={48} height={48} className="h-12 w-12" />
+              <span className="text-[1.75rem] font-semibold tracking-[-0.03em]">{config.storeName}</span>
             </Link>
-          )}
+            <p className="mt-5 max-w-[20ch] text-[clamp(1.75rem,3.2vw,2.5rem)] leading-[1.05] font-light tracking-[-0.04em] text-brand-muted">
+              Hecho a mano <span className="font-bold text-brand-700">en el Perú.</span>
+            </p>
+            <p className="mt-4 text-[0.9375rem] text-ink-2">
+              <span lang="qu" className="font-semibold text-ink">
+                Sulpayki
+              </span>{' '}
+              («gracias», en quechua) por visitarnos.
+            </p>
+          </div>
+
+          <div className="rounded-[1.5rem] bg-surface p-5 shadow-[0_24px_50px_-34px_rgb(23_22_43/0.5)] sm:p-6 lg:col-span-5 lg:col-start-8">
+            <p className="text-[1.125rem] font-semibold tracking-[-0.01em] text-ink">Pedidos y consultas</p>
+            <p className="mt-1.5 text-[0.9375rem] leading-relaxed text-ink-2">
+              Arma tu pedido en el carrito y envíalo por WhatsApp, o escríbenos para consultar disponibilidad.
+            </p>
+            {wa ? (
+              <a
+                href={wa}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group mt-5 flex items-center gap-3 rounded-2xl bg-ground p-2 pr-4 transition-colors hover:bg-[#25D366]/15"
+              >
+                <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-[#25D366] text-white">
+                  <svg viewBox="0 0 24 24" width={24} height={24} aria-hidden="true">
+                    <WhatsAppGlyph />
+                  </svg>
+                </span>
+                <span className="min-w-0 flex-1">
+                  <span className="block text-[0.8125rem] text-ink-3">WhatsApp</span>
+                  <span className="tnum block text-[1.0625rem] font-semibold text-ink">{phone}</span>
+                </span>
+                <span className="text-ink-3 transition-[color,transform] duration-300 group-hover:translate-x-0.5 group-hover:text-ink">
+                  <Arrow size={16} />
+                </span>
+              </a>
+            ) : (
+              <Link to="/contacto" className="btn btn--pill mt-5 px-5">
+                Ir a contacto
+                <Arrow size={14} />
+              </Link>
+            )}
+          </div>
+        </div>
+
+        {/* Enlaces */}
+        <StepBand className="mt-12 w-full text-ink/20 lg:mt-16" />
+        <div className="mt-10 grid gap-10 sm:grid-cols-2 lg:grid-cols-12 lg:gap-8">
+          <nav aria-label="Tienda" className="lg:col-span-3">
+            <p className={heading}>Tienda</p>
+            <ul className="mt-3 space-y-1">
+              {NAV.map((l) => (
+                <li key={l.to}>
+                  <Link to={l.to} className={item}>
+                    {l.label}
+                  </Link>
+                </li>
+              ))}
+              <li>
+                <Link to="/carrito" className={item}>
+                  Carrito
+                </Link>
+              </li>
+            </ul>
+          </nav>
+
+          <nav aria-label="Categorías" className="lg:col-span-5">
+            <p className={heading}>Categorías</p>
+            <ul className="mt-3 grid grid-cols-2 gap-x-6 gap-y-1">
+              {categories.slice(0, 9).map((c) => (
+                <li key={c.id}>
+                  <Link to={`/productos?categoria=${c.id}`} className={item}>
+                    {c.name}
+                  </Link>
+                </li>
+              ))}
+              <li>
+                <Link to="/productos" className="inline-block py-1.5 text-[0.9375rem] font-semibold text-brand-700 transition-colors hover:text-brand-600 sm:py-1">
+                  Ver todo →
+                </Link>
+              </li>
+            </ul>
+          </nav>
+
+          <div className="sm:col-span-2 lg:col-span-4">
+            <p className={heading}>Síguenos</p>
+            <p className="mt-3 max-w-[30ch] text-[0.9375rem] leading-relaxed text-ink-2">
+              {config.storeTagline || 'Novedades y piezas nuevas.'}
+            </p>
+            <SocialLinks className="mt-4" />
+          </div>
+        </div>
+
+        <div className="mt-12 flex flex-col gap-3 border-t border-ink/10 py-6 text-[0.8125rem] text-ink-3 sm:flex-row sm:items-center sm:justify-between">
+          <span>
+            © {YEAR} {config.storeName}. Precios en soles.
+          </span>
+          <button
+            type="button"
+            onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+            className="-my-2 inline-flex items-center gap-2 self-start py-2 font-medium text-ink-2 transition-colors hover:text-brand-700 sm:self-auto"
+          >
+            Volver arriba
+            <svg viewBox="0 0 16 16" width={14} height={14} aria-hidden="true">
+              <path d="M8 13V3m-4 4 4-4 4 4" fill="none" stroke="currentColor" strokeWidth={1.6} strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+          </button>
         </div>
       </div>
 
-      <div className="mx-auto max-w-[1360px] px-4 sm:px-8">
-        <div className="flex flex-col gap-3 border-t border-white/10 py-6 text-[0.8125rem] text-white/55 sm:flex-row sm:items-center sm:justify-between">
-        <span>
-          © {YEAR} {config.storeName}. Precios en soles.
-        </span>
-        <button
-          type="button"
-          onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-          className="-my-2 inline-flex items-center gap-2 self-start py-2 text-white/75 transition-colors hover:text-white sm:self-auto"
-        >
-          Volver arriba
-          <svg viewBox="0 0 16 16" width={14} height={14} aria-hidden="true">
-            <path d="M8 13V3m-4 4 4-4 4 4" fill="none" stroke="currentColor" strokeWidth={1.6} strokeLinecap="round" strokeLinejoin="round" />
-          </svg>
-        </button>
-        </div>
-      </div>
-
-      {/* Marca de agua: el nombre a todo el ancho, recortado por el borde inferior */}
+      {/* El nombre en blanco a todo el ancho, como un relieve sobre el gris, recortado por el borde inferior */}
       <p
         aria-hidden="true"
-        className="pointer-events-none -mb-[0.24em] px-2 text-center text-[clamp(4rem,16.5vw,19rem)] leading-[0.8] font-semibold tracking-[-0.065em] whitespace-nowrap text-white/[0.06] select-none"
+        className="pointer-events-none -mb-[0.24em] px-2 text-center text-[clamp(4rem,16.5vw,19rem)] leading-[0.8] font-semibold tracking-[-0.065em] whitespace-nowrap text-white/70 select-none"
       >
         {config.storeName.toLowerCase()}
       </p>
@@ -542,13 +578,15 @@ export function Layout() {
   }
 
   return (
-    <div className="flex min-h-screen flex-col overflow-x-clip bg-ground">
+    <div className="andean-ground flex min-h-screen flex-col overflow-x-clip">
       <header
-        className={`sticky top-0 z-30 transition-[background-color,box-shadow] duration-500 ease-out-expo ${
+        // En la portada, arriba del todo, la cabecera es parte del hero rojo (texto en blanco)
+        data-onred={pathname === '/' && !scrolled}
+        className={`group/h sticky top-0 z-30 transition-[background-color,box-shadow] duration-500 ease-out-expo ${
           scrolled
             ? 'bg-surface/90 shadow-[0_12px_30px_-22px_rgb(23_22_43/0.45)] backdrop-blur-md'
             : pathname === '/'
-              ? 'bg-hero' // en la portada, arriba del todo: continúa el fondo del hero sin corte
+              ? 'andean-tex-light bg-brand-700'
               : 'bg-ground/85 backdrop-blur-md'
         }`}
       >
@@ -570,7 +608,7 @@ export function Layout() {
         >
           <Link to="/" className="flex shrink-0 items-center gap-2.5 justify-self-start" aria-label={`${config.storeName}, inicio`}>
             <img src={`${import.meta.env.BASE_URL}logo.png`} alt="" width={40} height={40} className="h-8 w-8 sm:h-10 sm:w-10" />
-            <span className="text-[1.25rem] font-semibold tracking-[-0.02em] text-ink sm:text-[1.375rem]">
+            <span className="text-[1.25rem] font-semibold tracking-[-0.02em] text-ink transition-colors sm:text-[1.375rem] group-data-[onred=true]/h:text-white">
               {config.storeName}
             </span>
           </Link>

@@ -84,8 +84,18 @@ function CountUp({ value }: { value: number }) {
  * - grid: número arriba, texto debajo (columnas angostas: móvil, tableta).
  * - row: tarjetas anchas horizontales (ícono · número + texto), para el hero de escritorio.
  */
-export function HeroStats({ className = '', layout = 'grid' }: { className?: string; layout?: 'grid' | 'row' }) {
+export function HeroStats({
+  className = '',
+  layout = 'grid',
+  tone = 'red',
+}: {
+  className?: string
+  layout?: 'grid' | 'row'
+  /** light: tarjetas blancas con cifras rojas (sobre el hero rojo) */
+  tone?: 'red' | 'light'
+}) {
   const row = layout === 'row'
+  const light = tone === 'light'
   return (
     <ul className={`${row ? 'flex items-start justify-end gap-2.5' : 'grid grid-cols-3 gap-2.5'} ${className}`} aria-label="La tienda en cifras">
       {STATS.map((s, i) => (
@@ -93,12 +103,16 @@ export function HeroStats({ className = '', layout = 'grid' }: { className?: str
           key={s.label}
           // Escalera: cada tarjeta baja un escalón respecto de la anterior
           style={row ? { marginTop: `${i * 1.25}rem` } : undefined}
-          className={`min-w-0 rounded-[1.25rem] bg-brand-700/90 text-white shadow-[0_18px_36px_-18px_rgb(140_28_12/0.6)] ring-1 ring-white/15 backdrop-blur-md ${
+          className={`min-w-0 rounded-[1.25rem] ${
+            light
+              ? 'bg-surface text-brand-700 shadow-[0_22px_40px_-22px_rgb(60_8_2/0.7)]'
+              : 'bg-brand-700/90 text-white shadow-[0_18px_36px_-18px_rgb(140_28_12/0.6)] ring-1 ring-white/15 backdrop-blur-md'
+          } ${
             row ? 'flex w-[9.5rem] flex-col items-start p-3.5' : 'px-2.5 pt-3 pb-3.5 min-[400px]:px-3'
           }`}
         >
           <span
-            className={`flex shrink-0 items-center justify-center rounded-full bg-white text-brand-700 ${
+            className={`flex shrink-0 items-center justify-center rounded-full ${light ? 'bg-brand-700 text-white' : 'bg-white text-brand-700'} ${
               row ? 'mb-3 h-9 w-9' : 'mb-2.5 h-8 w-8'
             }`}
           >
@@ -113,7 +127,7 @@ export function HeroStats({ className = '', layout = 'grid' }: { className?: str
               {s.prefix}
               <CountUp value={s.value} />
             </span>
-            <span className={`mt-0.5 block leading-tight text-white/85 ${row ? 'mt-1 text-[0.8125rem]' : 'text-[0.75rem] min-[400px]:text-[0.8125rem]'}`}>
+            <span className={`mt-0.5 block leading-tight ${light ? 'text-ink-2' : 'text-white/85'} ${row ? 'mt-1 text-[0.8125rem]' : 'text-[0.75rem] min-[400px]:text-[0.8125rem]'}`}>
               {s.label}
             </span>
           </span>

@@ -70,18 +70,23 @@ export const useCart = create<CartState>()(
 export const cartCount = (items: CartItem[]) => items.reduce((n, i) => n + i.quantity, 0)
 export const cartTotal = (items: CartItem[]) => items.reduce((n, i) => n + i.price * i.quantity, 0)
 
-export function buildWhatsAppUrl(items: CartItem[]) {
+/** Mensaje del pedido tal como llega al WhatsApp de la tienda (texto plano con *negritas* de WhatsApp). */
+export function buildOrderMessage(items: CartItem[]) {
   const currency = items[0]?.currency ?? 'PEN'
+  const count = cartCount(items)
   const lines = items.map((i) => {
     const variant = i.variantLabel ? ` (${i.variantLabel})` : ''
-    return `• ${i.quantity} x ${i.name}${variant} [${i.code}] — ${formatMoney(i.price * i.quantity, i.currency)}`
+    return `• ${i.quantity} x ${i.name}${variant}\n   Cód. ${i.code} · ${formatMoney(i.price * i.quantity, i.currency)}`
   })
-  const text = [
+  return [
     `¡Hola ${config.storeName}! Quiero hacer este pedido:`,
     '',
     ...lines,
     '',
-    `*Total: ${formatMoney(cartTotal(items), currency)}*`,
+    `*Total: ${formatMoney(cartTotal(items), currency)}* (${count} ${count === 1 ? 'pieza' : 'piezas'})`,
   ].join('\n')
-  return `https://wa.me/${config.whatsappNumber}?text=${encodeURIComponent(text)}`
+}
+
+export function buildWhatsAppUrl(items: CartItem[]) {
+  return `https://wa.me/${config.whatsappNumber}?text=${encodeURIComponent(buildOrderMessage(items))}`
 }

@@ -3,16 +3,17 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 import { Link } from 'react-router'
 import { storeApi, useCategories, useProducts } from '../api/store'
 import type { Category, ProductFilters, ProductSummary } from '../api/types'
-import heroCentro from '../assets/editorial/hero-centro.webp'
-import heroCentroSm from '../assets/editorial/hero-centro-sm.webp'
-import heroCentroCut from '../assets/editorial/hero-centro-cut.webp'
-import heroCentroSmCut from '../assets/editorial/hero-centro-sm-cut.webp'
+import heroVitrina from '../assets/editorial/hero-vitrina.webp'
+import heroVitrinaSm from '../assets/editorial/hero-vitrina-sm.webp'
 import heroColeccion from '../assets/editorial/hero-coleccion.webp'
 import photoAlpaca from '../assets/editorial/material-alpaca.webp'
 import photoPlata from '../assets/editorial/material-plata.webp'
 import photoTextil from '../assets/editorial/material-textil.webp'
+import photoLima from '../assets/editorial/lugar-lima.webp'
+import photoPuno from '../assets/editorial/lugar-puno.webp'
 import photoRestore from '../assets/editorial/restauracion-plata.webp'
 import photoRestoreSm from '../assets/editorial/restauracion-plata-sm.webp'
+import { StepBand, StepDiamondField, StepHem } from '../components/Andean'
 import { CategoryIcon } from '../components/Ornaments'
 import { PlateSkeleton, ProductCard } from '../components/ProductCard'
 import { ProductImage } from '../components/ProductImage'
@@ -227,14 +228,6 @@ function Wordmark({
 /* Secciones                                                           */
 /* ------------------------------------------------------------------ */
 
-/** Frase del hero: los materiales en rojo. "Hecho a mano" ya lo dice el titular. */
-const TAGLINE = (
-  <>
-    <strong className="font-semibold text-brand-700">Plata</strong>,{' '}
-    <strong className="font-semibold text-brand-700">alpaca</strong> y{' '}
-    <strong className="font-semibold text-brand-700">telar</strong> de artesanos peruanos.
-  </>
-)
 
 /** Tarjeta de pieza recomendada, una por fila: foto a la izquierda, nombre y precio, flecha. */
 function PickCard({ product, wait, step = 0 }: { product: ProductSummary; wait: number; step?: number }) {
@@ -249,7 +242,7 @@ function PickCard({ product, wait, step = 0 }: { product: ProductSummary; wait: 
     >
       <Link
         to={`/producto/${product.slug}`}
-        className="group flex items-center gap-3.5 rounded-[1.25rem] bg-surface/70 p-2 pr-3 shadow-[0_16px_34px_-20px_rgb(23_22_43/0.5)] ring-1 ring-white/60 backdrop-blur-md backdrop-saturate-150 transition-[transform,box-shadow,background-color] duration-500 hover:bg-surface/90 ease-out-expo hover:-translate-y-1 hover:shadow-[0_24px_44px_-20px_rgb(23_22_43/0.55)]"
+        className="group flex items-center gap-3.5 rounded-[1.25rem] bg-surface p-2 pr-3 shadow-[0_22px_40px_-22px_rgb(60_8_2/0.7)] transition-[transform,box-shadow] duration-500 ease-out-expo hover:-translate-y-1 hover:shadow-[0_30px_50px_-22px_rgb(60_8_2/0.8)]"
       >
         <span className="block h-16 w-16 shrink-0 overflow-hidden rounded-[0.875rem] bg-sunk">
           <ProductImage
@@ -299,7 +292,7 @@ function HeroPicks({ picks, variant }: { picks: ProductSummary[]; variant: 'mobi
     >
       <h2
         id={id}
-        className="fade-up mb-3 text-[1rem] font-semibold tracking-[-0.01em] text-brand-700"
+        className="fade-up mb-3 text-[1rem] font-semibold tracking-[-0.01em] text-white"
         style={delay(900)}
       >
         Te recomendamos
@@ -315,6 +308,11 @@ function HeroPicks({ picks, variant }: { picks: ProductSummary[]; variant: 'mobi
 
 
 
+/**
+ * Hero "Escaparate rojo": el rojo de la marca a todo el ancho con la trama andina en blanco, un foco de luz
+ * detrás de las piezas recortadas (como una vitrina iluminada), titular en blanco y tarjetas blancas.
+ * Termina en la orilla escalonada sobre el gris de la página.
+ */
 function Hero({ picks }: { picks: ProductSummary[] }) {
   const stage = useStageMotion<HTMLElement>()
   const categories = useCategories()
@@ -333,83 +331,67 @@ function Hero({ picks }: { picks: ProductSummary[] }) {
   return (
     <section
       ref={stage}
-      className="relative isolate overflow-hidden bg-hero"
+      className="andean-tex-light relative isolate overflow-hidden bg-brand-700 text-white"
       style={{ '--sy': 0, '--px': 0 } as React.CSSProperties}
     >
-      {/* Escritorio: la foto de productos como fondo de todo el hero, centrada y nítida (sin velos).
-          Los elementos del hero van encima. */}
-      {/* La entrada se anima en el grupo entero (foto · palabra · recorte): si cada capa se desvaneciera por su
-          cuenta, durante la animación la palabra se vería a través de los productos semitransparentes. */}
+      {/* Foco de luz de vitrina detrás de las piezas */}
       <div
-        className="stage-in pointer-events-none absolute inset-0 -z-10 hidden overflow-hidden lg:block"
-        style={delay(100)}
+        className="pointer-events-none absolute inset-0 -z-20 bg-[radial-gradient(ellipse_48%_62%_at_50%_70%,rgb(255_255_255/0.2),transparent_70%)] lg:bg-[radial-gradient(ellipse_32%_50%_at_57%_62%,rgb(255_255_255/0.2),transparent_72%)]"
         aria-hidden="true"
-      >
+      />
+
+      {/* Escritorio: el bodegón de piezas, grande, al centro de la vitrina, apoyado sobre su sombra */}
+      <div className="stage-in pointer-events-none absolute inset-0 -z-10 hidden lg:block" style={delay(100)} aria-hidden="true">
+        {/* Ancho W: xl se ancla al índice "Por material" (su borde derecho queda 1.5rem antes) y crece hacia la
+            izquierda; su parte baja pasa detrás de las tarjetas de recomendados, que van encima */}
+        <div className="absolute bottom-[7%] left-[calc(50%+8rem)] h-16 w-[calc(var(--w)*0.9)] -translate-x-1/2 rounded-[50%] bg-[#3a0702]/55 blur-2xl [--w:min(42vw,calc((100svh-4.5rem)*0.95),760px)] xl:left-[calc(100%-max(0px,(100%-1360px)/2)-22rem-var(--w)/2)] xl:[--w:min(46vw,calc((100svh-4.5rem)*0.95),740px)]" />
         <img
-          src={heroCentro}
+          src={heroVitrina}
           alt=""
-          width={1920}
-          height={1280}
+          width={1200}
+          height={877}
           fetchPriority="high"
-          // Alto completo del hero, centrada entre las dos columnas. Solo el borde lateral del fondo vacío
-          // se funde con el gris (mismo color de estudio); los productos quedan nítidos.
-          className="absolute -bottom-6 left-[calc(50%-3rem)] h-[calc(100%+1.5rem)] w-auto max-w-none [mask-image:linear-gradient(to_right,transparent,#000_7%,#000_93%,transparent)] xl:left-[calc(50%-4.5rem)]"
-          style={{ translate: 'calc(-50% + var(--px) * -8px) calc(var(--sy) * 0.12px)' }}
-        />
-        {/* La palabra va entre la foto y el recorte: queda detrás de los productos, sobre el fondo de estudio */}
-        <div
-          className="absolute inset-x-0 top-3 origin-top"
-          style={{ transform: 'translate3d(calc(var(--sy) * -0.35px), 0, 0) scaleY(1.6)' }}
-        >
-          <Wordmark text="monatekeda" tone="text-white/45" className="-ml-[0.04em] text-[min(17vw,17rem)]" />
-        </div>
-        <img
-          src={heroCentroCut}
-          alt=""
-          width={1920}
-          height={1280}
-          className="absolute -bottom-6 left-[calc(50%-3rem)] h-[calc(100%+1.5rem)] w-auto max-w-none [mask-image:linear-gradient(to_right,transparent,#000_7%,#000_93%,transparent)] xl:left-[calc(50%-4.5rem)]"
+          className="absolute bottom-[8%] left-[calc(50%+8rem)] h-auto w-[var(--w)] max-w-none drop-shadow-[0_28px_34px_rgb(50_6_2/0.5)] [--w:min(42vw,calc((100svh-4.5rem)*0.95),760px)] xl:left-[calc(100%-max(0px,(100%-1360px)/2)-22rem-var(--w)/2)] xl:[--w:min(46vw,calc((100svh-4.5rem)*0.95),740px)]"
           style={{ translate: 'calc(-50% + var(--px) * -8px) calc(var(--sy) * 0.12px)' }}
         />
       </div>
 
       <div className="relative mx-auto max-w-[1360px] px-4 sm:px-8 lg:h-[min(860px,calc(100svh-4.5rem))] lg:min-h-[640px]">
-        {/*
-          Columna izquierda (escritorio: llena el alto del hero, un solo flujo)
-          Titular · frase · botones · (al pie) recomendados
-        */}
-        <div className="relative z-10 pt-10 sm:pt-14 lg:absolute lg:inset-y-0 lg:left-8 lg:flex lg:w-[min(36rem,42%)] lg:flex-col lg:pt-[7vh] lg:pb-10">
+        {/* Columna izquierda: titular · frase · botones · (al pie) recomendados */}
+        <div className="relative z-10 pt-10 sm:pt-14 lg:absolute lg:inset-y-0 lg:left-8 lg:flex lg:w-[min(36rem,42%)] lg:flex-col lg:pt-[7vh] lg:pb-14">
           <h1 className="text-[clamp(3.25rem,7.4vw,6rem)] leading-[0.95] tracking-[-0.04em] lg:text-[clamp(3.25rem,5.4vw,5.5rem)] lg:whitespace-nowrap">
             <span className="line-mask">
-              <span className="font-light text-brand-muted">Hecho a mano</span>
+              <span className="font-light text-white/80">Hecho a mano</span>
             </span>
             <span className="line-mask">
-              <span className="font-bold text-brand-700" style={delay(130)}>
+              <span className="font-bold text-white" style={delay(130)}>
                 en el Perú.
               </span>
             </span>
           </h1>
+          <StepBand className="fade-up mt-5 w-40 text-white/70" height={12} />
 
           <p
-            className="fade-up mt-5 max-w-[24rem] text-[1.375rem] leading-[1.25] font-light tracking-[-0.02em] text-brand-muted lg:[@media(max-height:779px)]:hidden"
+            className="fade-up mt-5 max-w-[24rem] text-[1.375rem] leading-[1.25] font-light tracking-[-0.02em] text-white/80 lg:[@media(max-height:779px)]:hidden"
             style={delay(380)}
           >
-            {TAGLINE}
+            <strong className="font-semibold text-white">Plata</strong>,{' '}
+            <strong className="font-semibold text-white">alpaca</strong> y{' '}
+            <strong className="font-semibold text-white">telar</strong> de artesanos peruanos.
           </p>
 
           <div className="fade-up mt-7 flex flex-wrap items-center gap-2.5 sm:gap-3" style={delay(480)}>
             <Link
               to="/productos"
-              className="btn btn--pill min-h-12 pr-4 pl-5 sm:min-h-[3.25rem] sm:pr-5 sm:pl-6 sm:text-base"
+              className="btn btn--light btn--pill min-h-12 pr-4 pl-5 sm:min-h-[3.25rem] sm:pr-5 sm:pl-6 sm:text-base"
             >
               Explorar piezas
               <Arrow />
             </Link>
             <a
               href="#categorias"
-              className="btn btn--dark btn--pill min-h-12 pr-5 pl-4 sm:min-h-[3.25rem] sm:pr-6 sm:pl-5 sm:text-base"
+              className="btn btn--outline-light btn--pill min-h-12 pr-5 pl-4 sm:min-h-[3.25rem] sm:pr-6 sm:pl-5 sm:text-base"
             >
-              {/* Ícono de cuadrícula: lleva a las categorías */}
               <svg viewBox="0 0 16 16" width={16} height={16} aria-hidden="true" fill="currentColor">
                 <rect x="1.5" y="1.5" width="5.5" height="5.5" rx="1.4" />
                 <rect x="9" y="1.5" width="5.5" height="5.5" rx="1.4" />
@@ -420,56 +402,51 @@ function Hero({ picks }: { picks: ProductSummary[] }) {
             </a>
           </div>
 
-          {/* Escritorio: recomendados al pie. Entre lg y xl (sin columna derecha) también cifras y redes. */}
+          {/* Escritorio: recomendados al pie. Entre lg y xl (sin columna derecha) también cifras. */}
           <div className="hidden lg:mt-auto lg:flex lg:flex-col lg:gap-6 lg:pt-8">
             <HeroPicks picks={picks} variant="desktop" />
             <div className="fade-up flex flex-col gap-4 xl:hidden" style={delay(1100)}>
-              <HeroStats className="max-w-[26rem]" />
+              <HeroStats tone="light" className="max-w-[26rem]" />
             </div>
           </div>
         </div>
 
-        {/* Móvil y tableta: la foto como bloque, recortada hacia los productos */}
-        <figure className="relative -mx-4 mt-8 overflow-hidden bg-[#dfe1e6] sm:-mx-8 lg:hidden">
-          <img
-            src={heroCentroSm}
-            alt="Piezas de la tienda sobre pedestales blancos: alpaca de peluche, manta tejida, cántaro de cerámica, vicuña, collar y brazalete de plata, cartera tejida"
-            width={1024}
-            height={683}
-            className="aspect-[4/3] w-full object-cover object-center"
+        {/* Móvil y tableta: las piezas recortadas bajo el titular, con su foco de luz */}
+        <figure className="relative mx-auto mt-10 max-w-[34rem] px-2 lg:hidden">
+          <div
+            className="pointer-events-none absolute inset-x-[8%] bottom-[2%] h-8 rounded-[50%] bg-[#3a0702]/55 blur-xl"
+            aria-hidden="true"
           />
-          <div className="absolute inset-x-0 top-[6%] origin-top scale-y-[1.6]" aria-hidden="true">
-            <Wordmark text="monatekeda" tone="text-white/45" className="-ml-[0.04em] text-[30vw] sm:text-[24vw]" />
-          </div>
           <img
-            src={heroCentroSmCut}
-            alt=""
-            width={1024}
-            height={683}
-            className="absolute inset-0 aspect-[4/3] h-full w-full object-cover object-center"
+            src={heroVitrinaSm}
+            alt="Piezas de la tienda: manta tejida, alpaca de peluche, vicuña de plata, cántaro de cerámica pintado, collar y brazalete de plata, cartera de cuero tejido"
+            width={720}
+            height={526}
+            className="relative h-auto w-full drop-shadow-[0_20px_26px_rgb(50_6_2/0.5)]"
           />
-          <figcaption className="absolute top-3 right-3 rounded-full bg-surface/85 px-2 py-0.5 text-[0.75rem] text-ink-3 backdrop-blur">
+          <figcaption className="absolute -top-6 right-2 rounded-full bg-surface/85 px-2 py-0.5 text-[0.75rem] text-ink-3 backdrop-blur">
             Imagen ilustrativa
           </figcaption>
         </figure>
         <p className="sr-only hidden lg:block">
-          Piezas de la tienda: alpaca de peluche, manta tejida, cántaro de cerámica, vicuña, collar y brazalete de plata,
-          cartera tejida.
+          Piezas de la tienda: manta tejida, alpaca de peluche, vicuña de plata, cántaro de cerámica pintado, collar y
+          brazalete de plata, cartera de cuero tejido.
         </p>
-        <span className="absolute bottom-4 left-1/2 z-10 hidden -translate-x-1/2 rounded-full bg-surface/85 px-2 py-0.5 text-[0.75rem] text-ink-3 backdrop-blur lg:block">
+        <span className="absolute bottom-6 left-1/2 z-10 hidden -translate-x-1/2 rounded-full bg-surface/85 px-2 py-0.5 text-[0.75rem] text-ink-3 backdrop-blur lg:block">
           Imagen ilustrativa
         </span>
 
-        {/* Cifras (xl): fila de tres tarjetas rojas arriba, a la derecha del titular; se montan sobre la foto */}
+        {/* Cifras (xl): tres tarjetas blancas en escalera, arriba a la derecha */}
         <HeroStats
           layout="row"
+          tone="light"
           className="fade-up absolute top-[calc(7vh+0.5rem)] right-8 z-10 hidden xl:flex"
         />
 
-        {/* Columna derecha (xl), alineada al pie: índice de materiales, cifras y redes */}
+        {/* Columna derecha (xl): índice de materiales en blanco */}
         <div className="absolute right-8 bottom-[9rem] z-10 hidden w-[18.5rem] flex-col gap-6 xl:flex [@media(max-height:799px)]:bottom-[6.5rem] [@media(min-height:850px)_and_(max-height:949px)]:bottom-[11rem] [@media(min-height:950px)]:bottom-[11.5rem]">
           <nav aria-labelledby="por-material" className="fade-up" style={delay(650)}>
-            <h2 id="por-material" className="text-[1.375rem] font-semibold tracking-[-0.02em] text-brand-700">
+            <h2 id="por-material" className="text-[1.375rem] font-semibold tracking-[-0.02em] text-white">
               Por material
             </h2>
             <ul className="mt-3 space-y-1.5">
@@ -477,14 +454,10 @@ function Hero({ picks }: { picks: ProductSummary[] }) {
                 <li key={m.label}>
                   <Link
                     to={m.to}
-                    className="group flex items-center justify-between border-b border-line-strong/70 py-1.5 text-[0.9375rem] text-ink-2 transition-colors hover:border-brand-600 hover:text-brand-700"
+                    className="group flex items-center justify-between border-b border-white/25 py-1.5 text-[0.9375rem] text-white/85 transition-colors hover:border-white hover:text-white"
                   >
                     <span className="flex items-center gap-2.5">
-                      <CategoryIcon
-                        name={m.label}
-                        size={24}
-                        className="text-ink-3 transition-colors group-hover:text-brand-600"
-                      />
+                      <CategoryIcon name={m.label} size={24} className="text-white/70 transition-colors group-hover:text-white" />
                       {m.label}
                     </span>
                     <span className="transition-transform duration-300 ease-out-expo group-hover:translate-x-1">
@@ -497,111 +470,104 @@ function Hero({ picks }: { picks: ProductSummary[] }) {
           </nav>
         </div>
 
-        {/* Redes (xl): al pie del hero, alineadas con el borde inferior de los recomendados */}
-        <SocialLinks
-          align="right"
-          className="fade-up absolute right-8 bottom-10 z-10 hidden w-[18.5rem] xl:block"
-        />
+        {/* Redes (xl): al pie, a la derecha */}
+        <SocialLinks tone="dark" align="right" className="fade-up absolute right-8 bottom-12 z-10 hidden w-[18.5rem] xl:block" />
 
         {/* Móvil y tableta: recomendados, cifras y redes al cierre del hero */}
         <HeroPicks picks={picks} variant="mobile" />
-        <div className="flex flex-col gap-5 pt-6 pb-8 lg:hidden">
-          <HeroStats />
-          <SocialLinks
-
-          />
+        <div className="flex flex-col gap-5 pt-6 pb-12 lg:hidden">
+          <HeroStats tone="light" />
+          <SocialLinks tone="dark" />
         </div>
       </div>
+      {/* Orilla escalonada: el rojo termina en peldaños sobre el gris de la página, como el remate de un tejido */}
+      <StepHem className="pointer-events-none absolute inset-x-0 -bottom-px z-20 text-ground" height={16} />
     </section>
   )
 }
 
 
 /**
- * Categorías del catálogo (reemplaza la franja de búsqueda): tarjetas con ícono grabado,
- * nombre y número de subcategorías. Datos reales de /categories.
+ * Categorías como directorio: panel blanco con el título y el acceso a todo el catálogo a la izquierda,
+ * y las categorías reales en columnas (ícono, nombre, subcategorías) a la derecha.
  */
 function Categories() {
   const categories = useCategories()
   const list = categories.data ?? []
-  const grid = useReveal<HTMLDivElement>(0.08)
+  const grid = useReveal<HTMLUListElement>(0.08)
 
   return (
     <section id="categorias" aria-labelledby="categorias-titulo" className="scroll-mt-24">
       <div className="mx-auto max-w-[1360px] px-4 pt-20 sm:px-8 lg:pt-28">
-        <div className="mb-10 flex flex-wrap items-end justify-between gap-4">
-          <h2
-            id="categorias-titulo"
-            className="text-[clamp(2.25rem,5vw,3.75rem)] leading-[1.02] font-light tracking-[-0.04em] text-brand-muted"
-          >
-            Explora por <span className="font-bold text-brand-700">categoría</span>
-          </h2>
-          <Link to="/productos" className="btn btn--ghost btn--pill px-5">
-            Ver todo el catálogo
-            <Arrow size={14} />
-          </Link>
-        </div>
-
-        {categories.isPending ? (
-          <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5 lg:gap-4">
-            {Array.from({ length: 10 }, (_, i) => (
-              <div key={i} className="h-40 animate-pulse rounded-[1.25rem] bg-sunk" />
-            ))}
-          </div>
-        ) : (
-          <div
-            ref={grid}
-            className="cascade grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5 lg:gap-4"
-          >
-            {list.map((c, i) => (
-              <Link
-                key={c.id}
-                to={`/productos?categoria=${c.id}`}
-                style={delay(i * 50)}
-                className="group relative flex min-h-40 flex-col rounded-[1.25rem] bg-surface p-4 shadow-[0_16px_34px_-24px_rgb(23_22_43/0.45)] transition-[transform,box-shadow] duration-500 ease-out-expo hover:-translate-y-1 hover:shadow-[0_26px_44px_-22px_rgb(23_22_43/0.5)] sm:p-5"
+        <div className="relative isolate overflow-hidden rounded-[2rem] bg-surface p-5 shadow-[0_30px_60px_-44px_rgb(23_22_43/0.5)] sm:p-8 lg:p-10">
+          <StepDiamondField className="-z-10 text-ink/[0.03]" />
+          <div className="grid gap-8 lg:grid-cols-12 lg:gap-10">
+            {/* Título y acceso a todo */}
+            <div className="flex min-w-0 flex-col lg:col-span-4">
+              <h2
+                id="categorias-titulo"
+                className="text-[clamp(2.25rem,4.4vw,3.5rem)] leading-[1.02] font-light tracking-[-0.04em] text-brand-muted"
               >
-                <span className="flex h-14 w-14 items-center justify-center rounded-2xl bg-brand-50 text-brand-700 transition-colors duration-300 group-hover:bg-brand-600 group-hover:text-white">
-                  <CategoryIcon name={c.name} size={34} />
+                Explora por <span className="font-bold text-brand-700">categoría</span>
+              </h2>
+              <p className="mt-3 max-w-[30ch] text-[1rem] leading-relaxed text-ink-3">
+                {list.length ? `${list.length} categorías` : 'Categorías'} de artesanía, del telar a la platería.
+              </p>
+              <StepBand className="mt-6 w-36 text-brand-600" />
+              <Link
+                to="/productos"
+                className="group mt-8 flex items-center justify-between gap-4 rounded-[1.25rem] bg-brand-700 p-5 text-white shadow-[0_18px_36px_-18px_rgb(140_28_12/0.6)] transition-colors hover:bg-brand-600 lg:mt-auto"
+              >
+                <span>
+                  <span className="block text-[1.25rem] font-semibold tracking-[-0.02em]">Todo el catálogo</span>
+                  <span className="mt-0.5 block text-[0.875rem] text-white/80">+3000 productos</span>
                 </span>
-                <span className="mt-auto pt-6 sm:pr-10">
-                  <span className="block text-[1.0625rem] leading-snug font-semibold tracking-[-0.01em] text-ink">
-                    {c.name}
-                  </span>
-                  <span className="mt-0.5 block text-[0.8125rem] text-ink-3">
-                    {c.children.length > 0
-                      ? `${c.children.length} ${c.children.length === 1 ? 'subcategoría' : 'subcategorías'}`
-                      : 'Ver piezas'}
-                  </span>
-                </span>
-                <span className="absolute top-4 right-4 flex h-9 w-9 items-center justify-center rounded-full bg-sunk text-ink-2 transition-[background-color,color,transform] duration-300 ease-out-expo group-hover:translate-x-0.5 group-hover:bg-brand-600 group-hover:text-white sm:top-auto sm:right-5 sm:bottom-5">
-                  <Arrow size={14} />
+                <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-white text-brand-700 transition-transform duration-300 ease-out-expo group-hover:translate-x-1">
+                  <Arrow size={16} />
                 </span>
               </Link>
-            ))}
-            {/* Cierre de la rejilla: acceso a todo el catálogo, en rojo de marca */}
-            <Link
-              to="/productos"
-              style={delay(list.length * 50)}
-              className="group relative flex min-h-40 flex-col rounded-[1.25rem] bg-brand-700 p-4 text-white shadow-[0_18px_36px_-20px_rgb(140_28_12/0.6)] transition-[transform,box-shadow,background-color] duration-500 ease-out-expo hover:-translate-y-1 hover:bg-brand-800 sm:p-5"
-            >
-              <span className="flex h-14 w-14 items-center justify-center rounded-2xl bg-white text-brand-700">
-                <svg viewBox="0 0 16 16" width={24} height={24} aria-hidden="true" fill="currentColor">
-                  <rect x="1.5" y="1.5" width="5.5" height="5.5" rx="1.4" />
-                  <rect x="9" y="1.5" width="5.5" height="5.5" rx="1.4" />
-                  <rect x="1.5" y="9" width="5.5" height="5.5" rx="1.4" />
-                  <rect x="9" y="9" width="5.5" height="5.5" rx="1.4" opacity=".55" />
-                </svg>
-              </span>
-              <span className="mt-auto pt-6 sm:pr-10">
-                <span className="block text-[1.0625rem] leading-snug font-semibold tracking-[-0.01em]">Todo el catálogo</span>
-                <span className="mt-0.5 block text-[0.8125rem] text-white/80">+3000 productos</span>
-              </span>
-              <span className="absolute right-4 bottom-4 flex h-9 w-9 items-center justify-center rounded-full bg-white text-brand-700 transition-transform duration-300 ease-out-expo group-hover:translate-x-0.5 sm:right-5 sm:bottom-5">
-                <Arrow size={14} />
-              </span>
-            </Link>
+            </div>
+
+            {/* Directorio de categorías */}
+            <div className="min-w-0 lg:col-span-8">
+              {categories.isPending ? (
+                <div className="grid gap-x-6 sm:grid-cols-2">
+                  {Array.from({ length: 8 }, (_, i) => (
+                    <div key={i} className="my-2 h-14 animate-pulse rounded-xl bg-sunk" />
+                  ))}
+                </div>
+              ) : (
+                <ul ref={grid} className="cascade grid gap-x-8 sm:grid-cols-2">
+                  {list.map((c, i) => (
+                    <li key={c.id} style={delay(i * 40)} className="border-b border-line/80">
+                      <Link
+                        to={`/productos?categoria=${c.id}`}
+                        className="group -mx-2 flex items-center gap-4 rounded-xl px-2 py-3.5 transition-colors hover:bg-ground"
+                      >
+                        <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-brand-50 text-brand-700 transition-colors duration-300 group-hover:bg-brand-600 group-hover:text-white">
+                          <CategoryIcon name={c.name} size={30} />
+                        </span>
+                        <span className="min-w-0 flex-1">
+                          <span className="block truncate text-[1.0625rem] font-semibold tracking-[-0.01em] text-ink group-hover:text-brand-700">
+                            {c.name}
+                          </span>
+                          <span className="block text-[0.8125rem] text-ink-3">
+                            {c.children.length > 0
+                              ? `${c.children.length} ${c.children.length === 1 ? 'subcategoría' : 'subcategorías'}`
+                              : 'Ver piezas'}
+                          </span>
+                        </span>
+                        <span className="text-ink-3 transition-[color,transform] duration-300 ease-out-expo group-hover:translate-x-1 group-hover:text-brand-700">
+                          <Arrow size={16} />
+                        </span>
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
           </div>
-        )}
+        </div>
       </div>
     </section>
   )
@@ -636,79 +602,276 @@ function useMaterialFilters() {
 
 type MaterialSource = { filters: ProductFilters; to: string }
 
-function MaterialTile({
+type MaterialKey = 'alpaca' | 'plateria' | 'textiles'
+const MATERIALS: { key: MaterialKey; name: string; line: string; img: string; alt: string }[] = [
+  {
+    key: 'alpaca',
+    name: 'Alpaca',
+    line: 'Gorros, manoplas, chalinas y peluches',
+    img: photoAlpaca,
+    alt: 'Madejas de lana de alpaca teñida en rojo, ocre, violeta y crudo',
+  },
+  {
+    key: 'plateria',
+    name: 'Platería',
+    line: 'Vicuñas, copas, bandejas y marcos',
+    img: photoPlata,
+    alt: 'Manos de un artesano grabando una pieza de plata con buril',
+  },
+  {
+    key: 'textiles',
+    name: 'Textiles',
+    line: 'Mantas, ponchos y tejidos de telar',
+    img: photoTextil,
+    alt: 'Telar de cintura con un tejido andino a medio hacer',
+  },
+]
+
+/** Fila del índice: nombre grande, cuenta real de piezas; activa en rojo con la greca debajo. */
+function MaterialRow({
+  m,
   source,
   ready,
-  title,
-  line,
-  img,
-  alt,
-  ratio,
-  large = false,
-  wait = 0,
+  active,
+  onSelect,
 }: {
+  m: (typeof MATERIALS)[number]
   source: MaterialSource
   ready: boolean
-  title: string
-  line: string
-  img: string
-  alt: string
-  /** Clases de tamaño del marco de la foto */
-  ratio: string
-  large?: boolean
-  wait?: number
+  active: boolean
+  onSelect: () => void
 }) {
-  const tile = useReveal<HTMLAnchorElement>()
-  const media = useParallax<HTMLImageElement>(40)
   const count = useProducts(source.filters, ready).data?.meta.total
+  return (
+    <li>
+      <button
+        type="button"
+        role="tab"
+        id={`mat-tab-${m.key}`}
+        aria-selected={active}
+        aria-controls="mat-panel"
+        onClick={onSelect}
+        onMouseEnter={onSelect}
+        onFocus={onSelect}
+        className="group relative flex w-full items-center justify-between gap-4 py-4 text-left lg:py-5"
+      >
+        <span
+          className={`text-[clamp(2.5rem,5vw,4.25rem)] leading-[0.95] tracking-[-0.045em] transition-[color,font-weight] duration-300 ${
+            active ? 'font-bold text-brand-700' : 'font-light text-brand-muted group-hover:text-brand-700'
+          }`}
+        >
+          {m.name}
+        </span>
+        <span
+          className={`tnum shrink-0 rounded-full px-3 py-1 text-[0.8125rem] font-semibold transition-colors duration-300 ${
+            active ? 'bg-brand-700 text-white' : 'bg-surface text-ink-2'
+          }`}
+        >
+          {count !== undefined ? `${count} ${count === 1 ? 'pieza' : 'piezas'}` : '…'}
+        </span>
+        {/* Greca escalonada bajo la fila activa; las demás llevan una línea fina */}
+        <span className="absolute inset-x-0 bottom-0" aria-hidden="true">
+          {active ? <StepBand className="w-full text-brand-600" height={10} /> : <span className="block h-px bg-line-strong/60" />}
+        </span>
+      </button>
+    </li>
+  )
+}
+
+/**
+ * Elige por material: índice tipográfico a la izquierda; a la derecha, un escenario que cambia con el
+ * material elegido (foto con fundido cruzado, piezas reales de ese material y acceso al catálogo).
+ * Hover, foco o toque eligen; la elección se recuerda mientras la página está abierta.
+ */
+function Materials() {
+  const m = useMaterialFilters()
+  const [active, setActive] = useState<MaterialKey>('alpaca')
+  const current = MATERIALS.find((x) => x.key === active)!
+  const source = m[active]
+  const res = useProducts(source.filters, m.ready)
+  const count = res.data?.meta.total
+  const picks = useMemo(() => {
+    const seen = new Set<string>()
+    const all = res.data?.data ?? []
+    // Primero las mejor presentadas; si no llegan a 4, el resto disponible con foto
+    const fallback = all.filter((p) => hasPhoto(p) && p.in_stock && !EXCLUDED_NAME.test(p.name))
+    return [...rank(all), ...fallback]
+      .filter((p) => {
+        const k = cleanKey(p.name)
+        if (seen.has(k)) return false
+        seen.add(k)
+        return true
+      })
+      .slice(0, 4)
+  }, [res.data])
+  const head = useReveal<HTMLDivElement>(0.2)
 
   return (
-    <Link ref={tile} to={source.to} className="group block">
-      <div
-        className={`reveal-media relative isolate overflow-hidden rounded-[1.5rem] bg-sunk ${ratio}`}
-        style={delay(wait)}
-      >
+    <section aria-labelledby="materiales" className="mx-auto max-w-[1360px] px-4 pt-24 sm:px-8 lg:pt-32">
+      <div className="grid gap-8 lg:grid-cols-12 lg:gap-10">
+        {/* Índice */}
+        <div ref={head} className="reveal lg:col-span-5 lg:pt-2">
+          <h2
+            id="materiales"
+            className="text-[clamp(1.5rem,2.4vw,2rem)] leading-[1.1] font-light tracking-[-0.03em] text-brand-muted"
+          >
+            Elige por <span className="font-bold text-brand-700">material</span>
+          </h2>
+          <p className="mt-2 max-w-[36ch] text-[0.9375rem] leading-relaxed text-ink-3">
+            Pasa el cursor o toca un material para ver sus piezas.
+          </p>
+          <ul role="tablist" aria-labelledby="materiales" aria-orientation="vertical" className="mt-6">
+            {MATERIALS.map((x) => (
+              <MaterialRow
+                key={x.key}
+                m={x}
+                source={m[x.key]}
+                ready={m.ready}
+                active={x.key === active}
+                onSelect={() => setActive(x.key)}
+              />
+            ))}
+          </ul>
+          <p className="mt-6 hidden text-[1.0625rem] leading-relaxed text-ink-2 lg:block" aria-live="polite">
+            {current.line}.
+          </p>
+        </div>
+
+        {/* Escenario */}
+        <div
+          id="mat-panel"
+          role="tabpanel"
+          aria-labelledby={`mat-tab-${active}`}
+          className="relative isolate overflow-hidden rounded-[1.75rem] bg-sunk lg:col-span-7"
+        >
+          <div className="relative aspect-[4/5] sm:aspect-[4/3] lg:aspect-auto lg:h-full lg:min-h-[40rem]">
+            {/* Las tres fotos apiladas; la activa aparece con fundido y un leve acercamiento */}
+            {MATERIALS.map((x) => (
+              <img
+                key={x.key}
+                src={x.img}
+                alt={x.key === active ? x.alt : ''}
+                aria-hidden={x.key !== active}
+                loading="lazy"
+                decoding="async"
+                className={`absolute inset-0 h-full w-full object-cover transition-[opacity,scale] duration-[900ms] ease-out-expo ${
+                  x.key === active ? 'scale-100 opacity-100' : 'scale-[1.06] opacity-0'
+                }`}
+              />
+            ))}
+            <div
+              className="pointer-events-none absolute inset-x-0 bottom-0 h-[62%] bg-gradient-to-t from-[#120d14]/90 via-[#120d14]/40 to-transparent"
+              aria-hidden="true"
+            />
+            <span className="absolute top-4 right-4 rounded-full bg-surface/85 px-2 py-0.5 text-[0.6875rem] text-ink-3 backdrop-blur">
+              Imagen ilustrativa
+            </span>
+
+            <div className="absolute inset-x-0 bottom-0 p-4 sm:p-6 lg:p-7">
+              <div className="flex items-end justify-between gap-4 text-white">
+                <div className="min-w-0">
+                  <p className="text-[clamp(1.75rem,3vw,2.5rem)] leading-none font-semibold tracking-[-0.035em]">
+                    {current.name}
+                  </p>
+                  <p className="mt-1.5 text-[0.9375rem] text-white/80 lg:hidden">{current.line}</p>
+                </div>
+                <Link
+                  to={source.to}
+                  className="btn btn--pill shrink-0 bg-white px-4 text-ink hover:!bg-brand-600 hover:text-white sm:px-5"
+                >
+                  {count ? `Ver las ${count}` : 'Ver todas'}
+                  <Arrow size={14} />
+                </Link>
+              </div>
+
+              {/* Piezas reales del material */}
+              <ul className="mt-4 grid grid-cols-4 gap-2 sm:gap-3" aria-label={`Piezas de ${current.name}`}>
+                {(res.isPending ? Array.from({ length: 4 }, () => null) : picks).map((p, i) => (
+                  <li key={p?.id ?? `s${i}`}>
+                    {p ? (
+                      <Link
+                        to={`/producto/${p.slug}`}
+                        className="group/p block overflow-hidden rounded-[0.875rem] bg-surface p-1 shadow-[0_14px_26px_-18px_rgb(0_0_0/0.6)] transition-transform duration-300 ease-out-expo hover:-translate-y-1"
+                        title={cleanName(p.name)}
+                      >
+                        <ProductImage
+                          src={p.image_thumb_url ?? p.image_url}
+                          alt={cleanName(p.name)}
+                          className="aspect-square w-full rounded-[0.625rem]"
+                        />
+                        <span className="tnum block truncate px-1 pt-1 pb-0.5 text-[0.6875rem] font-semibold text-brand-700 sm:text-[0.75rem]">
+                          {formatPriceRange(p.price_range, p.currency)}
+                        </span>
+                      </Link>
+                    ) : (
+                      <span className="block aspect-[4/5] animate-pulse rounded-[0.875rem] bg-white/20" />
+                    )}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  )
+}
+
+/* ------------------------------------------------------------------ */
+/* Ruraq maki: de dónde vienen las piezas (Puno y Lima)                */
+/* ------------------------------------------------------------------ */
+
+const ORIGINS = [
+  {
+    slug: 'puno',
+    name: 'Puno',
+    line: 'A orillas del lago Titicaca, a más de 3800 metros de altura.',
+    img: photoPuno,
+    alt: 'Orilla del lago Titicaca con totorales y un bote de totora sobre el agua, montañas del altiplano al fondo',
+  },
+  {
+    slug: 'lima',
+    name: 'Lima',
+    line: 'La capital, frente al océano Pacífico, con sus balcones de madera tallada.',
+    img: photoLima,
+    alt: 'Balcones limeños de madera tallada sobre una fachada colonial ocre del centro de Lima',
+  },
+]
+
+function OriginCard({ origin, wait }: { origin: (typeof ORIGINS)[number]; wait: number }) {
+  const card = useReveal<HTMLAnchorElement>()
+  const media = useParallax<HTMLImageElement>(36)
+
+  return (
+    <Link ref={card} to={`/productos?tag=${origin.slug}`} className="group block">
+      <div className="reveal-media relative isolate aspect-[4/5] overflow-hidden rounded-[1.5rem] bg-sunk" style={delay(wait)}>
         <img
           ref={media}
-          src={img}
-          alt={alt}
+          src={origin.img}
+          alt={origin.alt}
+          width={800}
+          height={1200}
           loading="lazy"
           decoding="async"
           className="absolute inset-0 h-full w-full object-cover transition-[scale] duration-[1200ms] ease-out-expo will-change-transform group-hover:scale-[1.04]"
         />
-        {/* Velo inferior: da contraste al texto sin tapar la pieza */}
         <div
-          className="pointer-events-none absolute inset-x-0 bottom-0 h-[65%] bg-gradient-to-t from-[#120d14]/85 via-[#120d14]/35 to-transparent"
+          className="pointer-events-none absolute inset-x-0 bottom-0 h-[55%] bg-gradient-to-t from-[#120d14]/85 via-[#120d14]/30 to-transparent"
           aria-hidden="true"
         />
-
         <span className="absolute top-4 right-4 rounded-full bg-surface/85 px-2 py-0.5 text-[0.6875rem] text-ink-3 backdrop-blur">
           Imagen ilustrativa
         </span>
-        {count !== undefined && count > 0 && (
-          <span className="tnum absolute top-4 left-4 rounded-full bg-brand-700 px-3 py-1 text-[0.8125rem] font-semibold text-white shadow-[0_8px_18px_-8px_rgb(140_28_12/0.7)]">
-            {count} {count === 1 ? 'pieza' : 'piezas'}
-          </span>
-        )}
-
-        <div className={`absolute inset-x-0 bottom-0 flex items-end justify-between gap-4 ${large ? 'p-6 sm:p-8' : 'p-5 sm:p-6'}`}>
-          <div className="min-w-0 text-white">
-            <h3
-              className={`leading-[1] font-semibold tracking-[-0.035em] ${
-                large ? 'text-[clamp(2.25rem,4vw,3.5rem)]' : 'text-[clamp(1.75rem,2.6vw,2.25rem)]'
-              }`}
-            >
-              {title}
-            </h3>
-            <p className={`mt-2 max-w-[30ch] text-white/80 ${large ? 'text-[1rem]' : 'text-[0.9375rem]'}`}>{line}</p>
-          </div>
-          <span
-            className={`flex shrink-0 items-center justify-center rounded-full bg-white text-ink transition-[background-color,color,transform] duration-500 ease-out-expo group-hover:translate-x-1 group-hover:bg-brand-600 group-hover:text-white ${
-              large ? 'h-14 w-14' : 'h-12 w-12'
-            }`}
-          >
-            <Arrow size={large ? 18 : 16} />
-            <span className="sr-only">Ver {title}</span>
+        <div className="absolute inset-x-0 bottom-0 p-6 text-white sm:p-7">
+          {/* Orilla escalonada blanca: el remate de tejido que separa la foto del texto */}
+          <StepBand className="mb-5 w-24 text-white/70" height={10} />
+          <h3 className="text-[clamp(2.25rem,4vw,3.25rem)] leading-none font-semibold tracking-[-0.04em]">{origin.name}</h3>
+          <p className="mt-2 max-w-[32ch] text-[0.9375rem] leading-snug text-white/80">{origin.line}</p>
+          <span className="mt-5 inline-flex items-center gap-2.5 rounded-full bg-white py-1.5 pr-2 pl-4 text-[0.875rem] font-semibold text-ink transition-colors duration-300 group-hover:bg-brand-600 group-hover:text-white">
+            Ver piezas de {origin.name}
+            <span className="flex h-7 w-7 items-center justify-center rounded-full bg-ink text-white transition-colors duration-300 group-hover:bg-white group-hover:text-brand-700">
+              <Arrow size={13} />
+            </span>
           </span>
         </div>
       </div>
@@ -716,57 +879,37 @@ function MaterialTile({
   )
 }
 
-function Materials() {
-  const m = useMaterialFilters()
-
+/**
+ * Origen de las piezas. La palabra quechua "Ruraq maki" (manos que hacen) da el título;
+ * su traducción va al lado, siempre en español claro.
+ */
+function Origins() {
+  const text = useReveal<HTMLDivElement>(0.2)
   return (
-    <section aria-labelledby="materiales" className="mx-auto max-w-[1360px] px-4 pt-24 sm:px-8 lg:pt-32">
-      <div className="mb-10 flex flex-wrap items-end justify-between gap-x-10 gap-y-4">
-        <h2
-          id="materiales"
-          className="text-[clamp(2.25rem,5vw,3.75rem)] leading-[1.02] font-light tracking-[-0.04em] text-brand-muted"
-        >
-          Elige por <span className="font-bold text-brand-700">material</span>
-        </h2>
-        <p className="max-w-[34ch] text-[1rem] leading-relaxed text-ink-3">
-          Cada material lleva directo a sus piezas en el catálogo, con el número de piezas que hay hoy.
-        </p>
-      </div>
-
-      <div className="grid gap-4 lg:grid-cols-12 lg:gap-5">
-        <div className="lg:col-span-7">
-          <MaterialTile
-            source={m.alpaca}
-            ready={m.ready}
-            title="Alpaca"
-            line="Gorros, manoplas, chalinas y peluches"
-            img={photoAlpaca}
-            alt="Madejas de lana de alpaca teñida en rojo, ocre, violeta y crudo"
-            ratio="aspect-[4/5] sm:aspect-[4/3] lg:aspect-auto lg:h-[44rem]"
-            large
-          />
+    <section aria-labelledby="origen-titulo" className="mx-auto max-w-[1360px] px-4 pt-24 sm:px-8 lg:pt-32">
+      <div className="grid gap-8 lg:grid-cols-12 lg:gap-8">
+        <div ref={text} className="reveal lg:col-span-4 lg:pt-6">
+          <p lang="qu" className="text-[clamp(2.75rem,5.6vw,4.5rem)] leading-[0.95] font-bold tracking-[-0.045em] text-brand-700">
+            Ruraq maki
+          </p>
+          <h2
+            id="origen-titulo"
+            className="mt-3 text-[clamp(1.5rem,2.4vw,2rem)] leading-[1.1] font-light tracking-[-0.03em] text-brand-muted"
+          >
+            «Manos que hacen», en quechua.
+          </h2>
+          <StepBand className="mt-7 w-40 text-brand-600" />
+          <p className="mt-7 max-w-[36ch] text-[1.0625rem] leading-relaxed text-ink-2">
+            Trabajamos con talleres familiares. Nuestras piezas vienen de regiones como Puno y Lima: elige un origen y
+            mira lo que llega de allí.
+          </p>
         </div>
-        <div className="grid gap-4 sm:grid-cols-2 lg:col-span-5 lg:grid-cols-1 lg:gap-5">
-          <MaterialTile
-            source={m.plateria}
-            ready={m.ready}
-            title="Platería"
-            line="Vicuñas, copas, bandejas y marcos"
-            img={photoPlata}
-            alt="Manos de un artesano grabando una pieza de plata con buril"
-            ratio="aspect-[4/3] lg:aspect-auto lg:h-[21.5rem]"
-            wait={120}
-          />
-          <MaterialTile
-            source={m.textiles}
-            ready={m.ready}
-            title="Textiles"
-            line="Mantas, ponchos y tejidos de telar"
-            img={photoTextil}
-            alt="Telar de cintura con un tejido andino a medio hacer"
-            ratio="aspect-[4/3] lg:aspect-auto lg:h-[21.5rem]"
-            wait={220}
-          />
+        <div className="grid gap-4 sm:grid-cols-2 lg:col-span-8 lg:gap-5">
+          {ORIGINS.map((o, i) => (
+            <div key={o.slug} className={i === 1 ? 'sm:mt-16' : ''}>
+              <OriginCard origin={o} wait={i * 120} />
+            </div>
+          ))}
         </div>
       </div>
     </section>
@@ -778,21 +921,26 @@ function Materials() {
 /* ------------------------------------------------------------------ */
 
 const RESTORE_OBJECTS = ['Bandejas', 'Copas', 'Marcos', 'Cubiertos', 'Figuras', 'Piezas de familia']
+const RESTORE_STEPS = [
+  { title: 'Envíanos una foto', body: 'Por WhatsApp, de la pieza que quieres restaurar.' },
+  { title: 'Te orientamos', body: 'Te contamos qué se puede hacer con tu pieza.' },
+  { title: 'Recupera su brillo', body: 'Le devolvemos el brillo y el detalle del grabado.' },
+]
 
 /**
- * Servicio de restauración de objetos de plata. La foto (misma bandeja, mitad oxidada y mitad pulida)
- * cuenta el servicio de un vistazo; su fondo de estudio es el gris de la página, así que va sin marco.
+ * Servicio de restauración de platería, en un panel oscuro (el único de la página): la bandeja
+ * mitad oxidada y mitad pulida cuenta el servicio; tres pasos dicen cómo pedirlo.
  */
 function Restoration() {
   const categories = useCategories()
   const plata = categories.data?.find((c) => /plater/i.test(c.name))
-  const text = useReveal<HTMLDivElement>(0.2)
-  const media = useReveal<HTMLDivElement>(0.2)
+  const panel = useReveal<HTMLDivElement>(0.15)
   const wa = config.whatsappNumber
     ? `https://wa.me/${config.whatsappNumber}?text=${encodeURIComponent(
         `¡Hola ${config.storeName}! Quiero consultar por la restauración de una pieza de plata.`,
       )}`
     : ''
+  const cta = 'btn btn--lg btn--pill px-6'
 
   return (
     <section
@@ -800,82 +948,94 @@ function Restoration() {
       aria-labelledby="restauracion-titulo"
       className="mx-auto max-w-[1360px] scroll-mt-24 px-4 pt-24 sm:px-8 lg:pt-32"
     >
-      <div className="grid items-center gap-10 lg:grid-cols-12 lg:gap-8">
-        <div ref={text} className="reveal lg:col-span-5">
-          <h2
-            id="restauracion-titulo"
-            className="text-[clamp(2.25rem,5vw,3.75rem)] leading-[1.02] font-light tracking-[-0.04em] text-brand-muted"
-          >
-            Restauramos tu <span className="font-bold text-brand-700">platería</span>
-          </h2>
-          <p className="mt-5 max-w-[38ch] text-[1.125rem] leading-relaxed text-ink-2">
-            Además de vender piezas de plata, restauramos las tuyas: les devolvemos el brillo y el detalle del
-            grabado.
-          </p>
-
-          <ul className="mt-6 flex flex-wrap gap-2" aria-label="Objetos que restauramos">
-            {RESTORE_OBJECTS.map((o) => (
-              <li
-                key={o}
-                className="rounded-full bg-surface px-3.5 py-1.5 text-[0.875rem] text-ink-2 shadow-[0_6px_16px_-12px_rgb(23_22_43/0.5)]"
-              >
-                {o}
-              </li>
-            ))}
-          </ul>
-
-          <p className="mt-6 max-w-[38ch] text-[0.9375rem] leading-relaxed text-ink-3">
-            Escríbenos con una foto de tu pieza y te orientamos.
-          </p>
-          <div className="mt-5 flex flex-wrap gap-3">
-            {wa ? (
-              <a href={wa} target="_blank" rel="noopener noreferrer" className="btn btn--lg btn--pill px-6">
-                Consultar restauración
-                <Arrow />
-              </a>
-            ) : (
-              <Link to="/contacto" className="btn btn--lg btn--pill px-6">
-                Consultar restauración
-                <Arrow />
-              </Link>
-            )}
-            <Link
-              to={plata ? `/productos?categoria=${plata.id}` : '/productos?q=plata'}
-              className="btn btn--lg btn--ghost btn--pill px-6"
-            >
-              Ver platería
-            </Link>
+      <div ref={panel} className="reveal relative isolate overflow-hidden rounded-[2rem] bg-ink text-white">
+        <StepDiamondField className="-z-10 text-white/[0.04]" />
+        <div className="grid lg:grid-cols-12">
+          {/* Foto: sobre un fondo claro, como en el estudio */}
+          <div className="relative bg-[#e4e5e9] lg:order-2 lg:col-span-7">
+            <img
+              src={photoRestoreSm}
+              srcSet={`${photoRestoreSm} 900w, ${photoRestore} 1536w`}
+              sizes="(min-width: 1024px) 760px, 100vw"
+              alt="Bandeja de plata grabada a medio restaurar: la mitad izquierda oxidada y oscura, la derecha limpia y brillante"
+              width={1536}
+              height={1024}
+              loading="lazy"
+              decoding="async"
+              className="h-full w-full object-cover"
+            />
+            <span className="absolute top-[22%] left-[22%] rounded-full bg-ink/85 px-3 py-1 text-[0.8125rem] font-medium text-white backdrop-blur">
+              Antes
+            </span>
+            <span className="absolute top-[22%] left-[56%] rounded-full bg-brand-700 px-3 py-1 text-[0.8125rem] font-medium text-white shadow-[0_8px_18px_-8px_rgb(140_28_12/0.7)]">
+              Después
+            </span>
+            <span className="absolute right-4 bottom-4 rounded-full bg-surface/85 px-2 py-0.5 text-[0.6875rem] text-ink-3 backdrop-blur">
+              Imagen ilustrativa
+            </span>
           </div>
-        </div>
 
-        <div ref={media} className="reveal relative lg:col-span-7" style={delay(120)}>
-          <img
-            src={photoRestoreSm}
-            srcSet={`${photoRestoreSm} 900w, ${photoRestore} 1536w`}
-            sizes="(min-width: 1024px) 760px, 100vw"
-            alt="Bandeja de plata grabada a medio restaurar: la mitad izquierda oxidada y oscura, la derecha limpia y brillante"
-            width={1536}
-            height={1024}
-            loading="lazy"
-            decoding="async"
-            // Bordes fundidos con el gris de la página: el fondo de estudio y la página casi coinciden
-            className="h-auto w-full [mask-composite:intersect] [mask-image:linear-gradient(to_right,transparent,#000_9%,#000_91%,transparent),linear-gradient(to_bottom,transparent,#000_14%,#000_86%,transparent)]"
-          />
-          {/* Rótulos sobre cada mitad de la bandeja */}
-          <span className="absolute top-[24%] left-[24%] rounded-full bg-ink/80 px-3 py-1 text-[0.8125rem] font-medium text-white backdrop-blur">
-            Antes
-          </span>
-          <span className="absolute top-[24%] left-[58%] rounded-full bg-brand-700 px-3 py-1 text-[0.8125rem] font-medium text-white shadow-[0_8px_18px_-8px_rgb(140_28_12/0.7)]">
-            Después
-          </span>
-          <span className="absolute right-[6%] bottom-[8%] rounded-full bg-surface/85 px-2 py-0.5 text-[0.6875rem] text-ink-3 backdrop-blur">
-            Imagen ilustrativa
-          </span>
+          {/* Texto, pasos y acciones */}
+          <div className="p-6 sm:p-10 lg:order-1 lg:col-span-5 lg:p-12">
+            <h2
+              id="restauracion-titulo"
+              className="text-[clamp(2.25rem,4.4vw,3.5rem)] leading-[1.02] font-light tracking-[-0.04em] text-white/70"
+            >
+              Restauramos tu <span className="font-bold text-white">platería</span>
+            </h2>
+            <p className="mt-4 max-w-[38ch] text-[1.0625rem] leading-relaxed text-white/75">
+              Además de vender piezas de plata, restauramos las tuyas.
+            </p>
+            <StepBand className="mt-6 w-36 text-brand-500" />
+
+            <ol className="mt-8 space-y-5">
+              {RESTORE_STEPS.map((s, i) => (
+                <li key={s.title} className="flex gap-4">
+                  <span className="tnum flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-white/10 text-[0.9375rem] font-semibold text-white ring-1 ring-white/15">
+                    {i + 1}
+                  </span>
+                  <span className="pt-1.5">
+                    <span className="block text-[1rem] font-semibold">{s.title}</span>
+                    <span className="mt-0.5 block text-[0.9375rem] leading-snug text-white/65">{s.body}</span>
+                  </span>
+                </li>
+              ))}
+            </ol>
+
+            <ul className="mt-8 flex flex-wrap gap-2" aria-label="Objetos que restauramos">
+              {RESTORE_OBJECTS.map((o) => (
+                <li key={o} className="rounded-full bg-white/8 px-3 py-1 text-[0.8125rem] text-white/80 ring-1 ring-white/12">
+                  {o}
+                </li>
+              ))}
+            </ul>
+
+            <div className="mt-8 flex flex-wrap gap-3">
+              {wa ? (
+                <a href={wa} target="_blank" rel="noopener noreferrer" className={cta}>
+                  Consultar restauración
+                  <Arrow />
+                </a>
+              ) : (
+                <Link to="/contacto" className={cta}>
+                  Consultar restauración
+                  <Arrow />
+                </Link>
+              )}
+              <Link
+                to={plata ? `/productos?categoria=${plata.id}` : '/productos?q=plata'}
+                className="btn btn--lg btn--pill btn--outline-light px-6"
+              >
+                Ver platería
+              </Link>
+            </div>
+          </div>
         </div>
       </div>
     </section>
   )
 }
+
 
 /* ------------------------------------------------------------------ */
 /* Piezas disponibles, con filtro por material                         */
@@ -921,24 +1081,25 @@ function SeriesGrid({ series, pending, error, retry }: ReturnType<typeof useSeri
 
   return (
     <section aria-labelledby="piezas" className="mx-auto max-w-[1360px] px-4 pt-24 sm:px-8 lg:pt-32">
-      <div className="mb-8 flex flex-wrap items-end justify-between gap-4">
+      <div className="grid gap-8 lg:grid-cols-12 lg:gap-10">
+      {/* Columna lateral (fija al hacer scroll en escritorio): título, filtros y acceso al catálogo */}
+      <div className="min-w-0 lg:col-span-3">
+      <div className="lg:sticky lg:top-28">
         <h2
           id="piezas"
-          className="text-[clamp(2.25rem,5vw,3.75rem)] leading-[1.02] font-light tracking-[-0.04em] text-brand-muted"
+          className="text-[clamp(2.25rem,4vw,3.25rem)] leading-[1.02] font-light tracking-[-0.04em] text-brand-muted"
         >
           Piezas <span className="font-bold text-brand-700">disponibles</span>
         </h2>
-        <Link to={more} className="btn btn--ghost btn--pill px-5">
-          {source ? `Ver todo en ${TABS.find((t) => t.id === tab)?.label}` : 'Ver todo el catálogo'}
-          <Arrow size={14} />
-        </Link>
-      </div>
+        <p className="mt-3 text-[1rem] text-ink-3">En stock y con foto, listas para pedir.</p>
+        <StepBand className="mt-6 hidden w-32 text-brand-600 lg:block" />
 
-      {/* Filtro por material: píldoras que se desplazan en móvil */}
+      {/* Filtro por material: píldoras que se desplazan en móvil; lista vertical en escritorio */}
       <div
         role="tablist"
         aria-label="Filtrar piezas por material"
-        className="-mx-4 mb-8 flex gap-2 overflow-x-auto px-4 pb-1 [scrollbar-width:none] sm:mx-0 sm:px-0"
+        aria-orientation="vertical"
+        className="-mx-4 mt-6 flex gap-2 overflow-x-auto px-4 pb-1 [scrollbar-width:none] sm:mx-0 sm:px-0 lg:mt-8 lg:flex-col lg:overflow-visible"
       >
         {TABS.map((t) => {
           const on = t.id === tab
@@ -952,7 +1113,7 @@ function SeriesGrid({ series, pending, error, retry }: ReturnType<typeof useSeri
                 setTab(t.id)
                 setSwitched(true)
               }}
-              className={`flex min-h-11 shrink-0 items-center gap-2 rounded-full px-4 text-[0.9375rem] font-medium transition-[background-color,color,box-shadow] duration-300 ${
+              className={`flex min-h-11 shrink-0 items-center gap-2 rounded-full px-4 text-[0.9375rem] font-medium transition-[background-color,color,box-shadow] duration-300 lg:min-h-12 lg:w-full lg:rounded-xl ${
                 on
                   ? 'bg-ink text-white shadow-[0_10px_22px_-14px_rgb(23_22_43/0.7)]'
                   : 'bg-surface text-ink-2 hover:text-brand-700'
@@ -966,8 +1127,17 @@ function SeriesGrid({ series, pending, error, retry }: ReturnType<typeof useSeri
           )
         })}
       </div>
+        {/* .btn fija su propio display: se oculta con un contenedor */}
+        <div className="mt-6 hidden lg:block">
+          <Link to={more} className="btn btn--ghost btn--pill px-5">
+            {source ? `Ver todo en ${TABS.find((t) => t.id === tab)?.label}` : 'Ver todo el catálogo'}
+            <Arrow size={14} />
+          </Link>
+        </div>
+      </div>
+      </div>
 
-      <div id="piezas-panel" role="tabpanel" aria-labelledby="piezas" aria-busy={loading}>
+      <div id="piezas-panel" role="tabpanel" aria-labelledby="piezas" aria-busy={loading} className="min-w-0 lg:col-span-9">
         {failed ? (
           <ErrorState error={failed} onRetry={source ? () => filtered.refetch() : retry} />
         ) : !loading && items.length === 0 ? (
@@ -978,7 +1148,7 @@ function SeriesGrid({ series, pending, error, retry }: ReturnType<typeof useSeri
             </Link>
           </p>
         ) : (
-          <div ref={grid} className="cascade grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-5 lg:grid-cols-4">
+          <div ref={grid} className="cascade grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-5 xl:grid-cols-4">
             {loading
               ? Array.from({ length: SERIES }, (_, i) => <PlateSkeleton key={i} />)
               : items.map((p, i) => (
@@ -1018,6 +1188,13 @@ function SeriesGrid({ series, pending, error, retry }: ReturnType<typeof useSeri
           </div>
         )}
       </div>
+      </div>
+      <div className="mt-8 lg:hidden">
+        <Link to={more} className="btn btn--ghost btn--pill px-5">
+          {source ? `Ver todo en ${TABS.find((t) => t.id === tab)?.label}` : 'Ver todo el catálogo'}
+          <Arrow size={14} />
+        </Link>
+      </div>
     </section>
   )
 }
@@ -1034,6 +1211,7 @@ function Closing() {
       <div ref={panel} className="relative isolate">
         {/* Fondo del panel y marca de agua (recortados) */}
         <div className="absolute inset-0 -z-10 overflow-hidden rounded-[2rem] bg-brand-700" aria-hidden="true">
+          <StepDiamondField className="text-white/[0.07]" />
           <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(120%_90%_at_85%_100%,rgb(255_255_255/0.14),transparent_60%)]" />
           <div className="absolute inset-x-0 -bottom-[0.2em] left-6 text-[clamp(5rem,17vw,16rem)]">
             <Wordmark text="monatekeda" tone="text-white/[0.07]" animate={false} />
@@ -1095,6 +1273,7 @@ export function HomePage() {
       <Categories />
       <TopProducts />
       <Materials />
+      <Origins />
       <Restoration />
       <SeriesGrid {...data} />
       <Closing />

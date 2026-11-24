@@ -1,10 +1,12 @@
 import { useQuery } from '@tanstack/react-query'
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useState } from 'react'
 import { Link } from 'react-router'
 import { storeApi } from '../api/store'
 import type { ProductSummary } from '../api/types'
 import { cleanName, formatPriceRange } from '../lib/format'
 import { useCart } from '../store/cart'
+import { useReveal } from '../lib/useReveal'
+import { StepBand } from './Andean'
 import { CartIcon } from './Ornaments'
 import { ProductImage } from './ProductImage'
 
@@ -104,289 +106,108 @@ function BuyButton({ product, large = false }: { product: ProductSummary; large?
   )
 }
 
-function RankBadge({ rank, large = false }: { rank: number; large?: boolean }) {
-  return (
-    <span
-      className={`absolute top-3 left-3 z-10 flex items-center justify-center rounded-full bg-brand-700 font-bold text-white shadow-[0_8px_18px_-8px_rgb(140_28_12/0.7)] ${
-        large ? 'h-12 min-w-12 px-3 text-[1.125rem]' : 'h-9 min-w-9 px-2.5 text-[0.875rem]'
-      }`}
-    >
-      <span className="sr-only">Puesto </span>#{rank}
-    </span>
-  )
-}
+const pad = (n: number) => String(n).padStart(2, '0')
 
-
-/** Tarjeta del carrusel: foto alta, puesto, datos y compra. */
-function SlideCard({ product, rank }: { product: ProductSummary; rank: number }) {
+/** #1: pieza protagonista. Foto alta, número grande sobre la foto, datos y compra al pie. */
+function FeatureCard({ product }: { product: ProductSummary }) {
   const name = cleanName(product.name)
   const href = `/producto/${product.slug}`
   return (
-    <article className="group relative flex h-full flex-col rounded-[1.5rem] bg-surface p-2 shadow-[0_16px_34px_-26px_rgb(23_22_43/0.45)] transition-[transform,box-shadow] duration-500 ease-out-expo hover:-translate-y-1 hover:shadow-[0_26px_44px_-24px_rgb(23_22_43/0.5)]">
-      <Link to={href} className="relative block overflow-hidden rounded-[1.125rem] bg-sunk" tabIndex={-1} aria-hidden="true">
+    <article className="group relative isolate flex h-full min-h-[30rem] flex-col justify-end overflow-hidden rounded-[1.75rem] bg-sunk lg:min-h-[40rem]">
+      <Link to={href} className="absolute inset-0 -z-10" tabIndex={-1} aria-hidden="true">
         <ProductImage
           src={product.image_url ?? product.image_thumb_url}
           alt={name}
-          className="aspect-[4/5] w-full transition-transform duration-[900ms] ease-out-expo group-hover:scale-[1.05]"
+          className="h-full w-full transition-transform duration-[1200ms] ease-out-expo group-hover:scale-[1.04]"
         />
       </Link>
-      <RankBadge rank={rank} large={rank === 1} />
-      <div className="flex flex-1 flex-col px-2.5 pt-3.5 pb-2.5">
-        {product.category && <p className="truncate text-[0.75rem] text-ink-3">{product.category.name}</p>}
-        <h3 className="mt-0.5 line-clamp-2 text-[1.0625rem] leading-snug font-semibold tracking-[-0.01em] text-ink">
-          <Link to={href} className="hover:text-brand-700">
-            {name}
-          </Link>
-        </h3>
-        <div className="mt-auto flex items-center justify-between gap-3 pt-4">
-          <p className="tnum min-w-0 text-[1rem] font-semibold whitespace-nowrap text-brand-700">
-            {formatPriceRange(product.price_range, product.currency)}
-          </p>
-          <BuyButton product={product} />
+      <div
+        className="pointer-events-none absolute inset-0 -z-10 bg-gradient-to-t from-[#120d14]/90 via-[#120d14]/25 to-[#120d14]/30"
+        aria-hidden="true"
+      />
+      {/* Puesto: numeral grande con la greca debajo */}
+      <div className="absolute top-5 left-5 text-white sm:top-7 sm:left-7">
+        <p className="tnum text-[clamp(4.5rem,9vw,7.5rem)] leading-[0.8] font-bold tracking-[-0.06em]">
+          <span className="sr-only">Puesto </span>01
+        </p>
+        <StepBand className="mt-3 w-28 text-white/80" height={10} />
+      </div>
+      <div className="flex flex-wrap items-end justify-between gap-4 p-5 text-white sm:p-7">
+        <div className="min-w-0">
+          {product.category && <p className="text-[0.875rem] text-white/75">{product.category.name}</p>}
+          <h3 className="mt-1 max-w-[18ch] text-[clamp(1.75rem,3vw,2.5rem)] leading-[1.02] font-semibold tracking-[-0.035em]">
+            <Link to={href} className="hover:underline hover:underline-offset-4">
+              {name}
+            </Link>
+          </h3>
+          <p className="tnum mt-2 text-[1.25rem] font-semibold">{formatPriceRange(product.price_range, product.currency)}</p>
         </div>
+        <BuyButton product={product} large />
       </div>
     </article>
   )
 }
 
-const AUTOPLAY_MS = 4500
-/** Ancho de la tarjeta del carrusel (el resto se calcula a partir de él). */
-const CARD_W = 'w-[min(74vw,19rem)]'
-
-/** Distancia circular más corta entre dos posiciones: el carrusel da la vuelta. */
-const offsetOf = (i: number, active: number, n: number) => {
-  let d = i - active
-  if (d > n / 2) d -= n
-  if (d < -n / 2) d += n
-  return d
-}
-
-/**
- * Carrusel 3D tipo "coverflow": la pieza activa al frente y de cara; las vecinas giran sobre su eje,
- * retroceden en profundidad y se oscurecen. Da la vuelta (tras la #10 vuelve la #1).
- * Controles: flechas, puntos, teclado (←/→), arrastre o deslizamiento, y clic en una tarjeta lateral.
- * Avance automático suave que se detiene al interactuar y se pausa fuera de pantalla o con movimiento reducido.
- */
-function Carousel({ items }: { items: ProductSummary[] }) {
-  const n = items.length
-  const [active, setActive] = useState(0)
-  const [stopped, setStopped] = useState(false)
-  const [narrow, setNarrow] = useState(() => window.matchMedia('(max-width: 639px)').matches)
-  const [reduced] = useState(() => window.matchMedia('(prefers-reduced-motion: reduce)').matches)
-  const stage = useRef<HTMLDivElement>(null)
-  const paused = useRef(false)
-  const visible = useRef(false)
-  const drag = useRef<{ x: number; moved: boolean } | null>(null)
-
-  const go = useCallback((dir: number) => setActive((a) => (a + dir + n) % n), [n])
-  const stop = () => setStopped(true)
-
-  useEffect(() => {
-    const mq = window.matchMedia('(max-width: 639px)')
-    const on = () => setNarrow(mq.matches)
-    mq.addEventListener('change', on)
-    const el = stage.current
-    const io = el
-      ? new IntersectionObserver(
-          ([e]) => {
-            visible.current = e.isIntersecting
-          },
-          { threshold: 0.4 },
-        )
-      : null
-    if (el && io) io.observe(el)
-    return () => {
-      mq.removeEventListener('change', on)
-      io?.disconnect()
-    }
-  }, [])
-
-  useEffect(() => {
-    if (stopped || reduced) return
-    const id = window.setInterval(() => {
-      if (!paused.current && visible.current && !document.hidden) go(1)
-    }, AUTOPLAY_MS)
-    return () => window.clearInterval(id)
-  }, [stopped, go, reduced])
-
-  // Geometría: separación lateral, giro y profundidad por cada paso desde el centro
-  const step = narrow ? 52 : 64 // % del ancho de la tarjeta
-  const turn = narrow ? 32 : 38 // grados
-  const depth = narrow ? 140 : 190 // px
-  const reach = narrow ? 1 : 3 // tarjetas visibles a cada lado
-
+/** #2 en adelante: fila de ranking con numeral, miniatura, datos y precio. */
+function RankRow({ product, rank, wait }: { product: ProductSummary; rank: number; wait: number }) {
+  const name = cleanName(product.name)
   return (
-    <div
-      role="region"
-      aria-roledescription="carrusel"
-      aria-label="Top productos"
-      onMouseEnter={() => {
-        paused.current = true
-      }}
-      onMouseLeave={() => {
-        paused.current = false
-      }}
-      onFocus={() => {
-        paused.current = true
-      }}
-      onBlur={() => {
-        paused.current = false
-      }}
-      onKeyDown={(e) => {
-        if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') {
-          e.preventDefault()
-          stop()
-          go(e.key === 'ArrowRight' ? 1 : -1)
-        }
-      }}
-    >
-      <div
-        ref={stage}
-        className="relative mx-auto flex touch-pan-y justify-center select-none [perspective:1600px]"
-        onPointerDown={(e) => {
-          drag.current = { x: e.clientX, moved: false }
-        }}
-        onPointerMove={(e) => {
-          if (drag.current && Math.abs(e.clientX - drag.current.x) > 8) drag.current.moved = true
-        }}
-        onPointerUp={(e) => {
-          const d = drag.current
-          drag.current = null
-          if (!d) return
-          const dx = e.clientX - d.x
-          if (Math.abs(dx) > 40) {
-            stop()
-            go(dx < 0 ? 1 : -1)
-          }
-        }}
-        onPointerCancel={() => {
-          drag.current = null
-        }}
+    <li style={{ '--d': `${wait}ms` } as React.CSSProperties}>
+      {rank > 2 && <StepBand className="mx-3 my-1 w-[calc(100%-1.5rem)] text-ink/10" height={8} />}
+      <Link
+        to={`/producto/${product.slug}`}
+        className="group flex items-center gap-3 rounded-[1.25rem] p-2 pr-3 transition-[background-color,box-shadow] duration-300 hover:bg-surface hover:shadow-[0_16px_34px_-26px_rgb(23_22_43/0.45)] sm:gap-4 sm:pr-4"
       >
-        {/* Ocupa el alto de la tarjeta activa; las demás se apilan encima en absoluto */}
-        <div className={`${CARD_W} invisible`} aria-hidden="true">
-          <SlideCard product={items[0]} rank={1} />
-        </div>
-
-        {items.map((p, i) => {
-          const off = offsetOf(i, active, n)
-          const abs = Math.abs(off)
-          const isActive = off === 0
-          const hidden = abs > reach
-          return (
-            <div
-              key={p.id}
-              aria-roledescription="diapositiva"
-              aria-label={`${i + 1} de ${n}`}
-              aria-hidden={!isActive}
-              onClickCapture={(e) => {
-                // Si el gesto fue un arrastre, no seguir el enlace de la tarjeta
-                if (drag.current?.moved) e.preventDefault()
-              }}
-              className={`absolute top-0 ${CARD_W} ${isActive ? '' : 'cursor-pointer'} ${
-                reduced ? '' : 'transition-[transform,opacity] duration-700 ease-out-expo'
-              }`}
-              style={{
-                transform: `translateX(${off * step}%) translateZ(${-abs * depth}px) rotateY(${off * -turn}deg)`,
-                zIndex: 50 - abs,
-                opacity: hidden ? 0 : 1,
-                pointerEvents: hidden ? 'none' : undefined,
-              }}
-            >
-              {/* Las laterales no son interactivas; la capa de encima recoge el clic y las trae al frente */}
-              <div inert={!isActive}>
-                <SlideCard product={p} rank={i + 1} />
-              </div>
-              <span
-                aria-hidden="true"
-                onClick={() => {
-                  if (isActive || drag.current?.moved) return
-                  stop()
-                  setActive(i)
-                }}
-                className={`absolute inset-0 rounded-[1.5rem] bg-ink transition-opacity duration-700 ${
-                  isActive ? 'pointer-events-none opacity-0' : abs === 1 ? 'opacity-15' : 'opacity-30'
-                }`}
-              />
-            </div>
-          )
-        })}
-      </div>
-
-      {/* Anuncio para lectores de pantalla */}
-      <p className="sr-only" aria-live="polite">
-        {`Pieza ${active + 1} de ${n}: ${cleanName(items[active].name)}`}
-      </p>
-
-      <div className="mt-10 flex items-center justify-center gap-5">
-        <button
-          type="button"
-          onClick={() => {
-            stop()
-            go(-1)
-          }}
-          aria-label="Anterior"
-          className="flex h-12 w-12 items-center justify-center rounded-full bg-surface text-ink shadow-[0_10px_22px_-16px_rgb(23_22_43/0.6)] transition-colors duration-300 hover:bg-brand-600 hover:text-white"
-        >
-          <span className="flex rotate-180">
-            <Arrow size={16} />
+        <span className="tnum w-11 shrink-0 text-center text-[1.75rem] leading-none font-light tracking-[-0.04em] text-brand-muted transition-colors group-hover:font-bold group-hover:text-brand-700 sm:w-14 sm:text-[2.25rem]">
+          <span className="sr-only">Puesto </span>
+          {pad(rank)}
+        </span>
+        <ProductImage
+          src={product.image_thumb_url ?? product.image_url}
+          alt=""
+          className="h-16 w-16 shrink-0 rounded-[0.875rem] sm:h-[4.5rem] sm:w-[4.5rem]"
+        />
+        <span className="min-w-0 flex-1">
+          {product.category && <span className="block truncate text-[0.75rem] text-ink-3">{product.category.name}</span>}
+          <span className="block truncate text-[0.9375rem] font-semibold text-ink sm:text-[1rem]">{name}</span>
+          <span className="tnum mt-0.5 block text-[0.875rem] font-semibold text-brand-700 sm:hidden">
+            {formatPriceRange(product.price_range, product.currency)}
           </span>
-        </button>
-        <p className="tnum min-w-[4.5rem] text-center text-[0.9375rem] font-semibold text-ink sm:hidden" aria-hidden="true">
-          {active + 1} <span className="font-normal text-ink-3">/ {n}</span>
-        </p>
-        <div className="hidden items-center gap-1.5 sm:flex" role="group" aria-label="Elegir pieza">
-          {items.map((p, i) => (
-            <button
-              key={p.id}
-              type="button"
-              aria-label={`Ver pieza ${i + 1}`}
-              aria-current={i === active}
-              onClick={() => {
-                stop()
-                setActive(i)
-              }}
-              className="flex h-6 items-center justify-center"
-            >
-              <span
-                className={`block h-1.5 rounded-full transition-[width,background-color] duration-500 ease-out-expo ${
-                  i === active ? 'w-7 bg-brand-600' : 'w-1.5 bg-line-strong hover:bg-ink-3'
-                }`}
-              />
-            </button>
-          ))}
-        </div>
-        <button
-          type="button"
-          onClick={() => {
-            stop()
-            go(1)
-          }}
-          aria-label="Siguiente"
-          className="flex h-12 w-12 items-center justify-center rounded-full bg-surface text-ink shadow-[0_10px_22px_-16px_rgb(23_22_43/0.6)] transition-colors duration-300 hover:bg-brand-600 hover:text-white"
-        >
-          <Arrow size={16} />
-        </button>
-      </div>
-    </div>
+        </span>
+        <span className="tnum hidden shrink-0 text-[1rem] font-semibold text-brand-700 sm:block">
+          {formatPriceRange(product.price_range, product.currency)}
+        </span>
+        <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-surface text-ink-2 transition-colors duration-300 group-hover:bg-brand-600 group-hover:text-white">
+          <Arrow />
+        </span>
+      </Link>
+    </li>
   )
 }
 
+/**
+ * Top productos como ranking editorial: el #1 protagonista a la izquierda; del #2 al #7 una lista
+ * numerada a la derecha, con divisiones escalonadas. Todo visible de un vistazo, sin carrusel.
+ */
 export function TopProducts() {
   const top = useTopProducts()
-  const items = top.data ?? []
+  const items = (top.data ?? []).slice(0, 7)
+  const list = useReveal<HTMLOListElement>(0.1)
 
   if (top.isError || (!top.isPending && items.length === 0)) return null
 
   return (
-    <section aria-labelledby="top-titulo" className="mx-auto max-w-[1360px] overflow-x-clip px-4 pt-20 sm:px-8 lg:pt-28">
-      <div className="mb-8 flex flex-wrap items-end justify-between gap-4">
-        <h2
-          id="top-titulo"
-          className="text-[clamp(2.25rem,5vw,3.75rem)] leading-[1.02] font-light tracking-[-0.04em] text-brand-muted"
-        >
-          Top <span className="font-bold text-brand-700">productos</span>
-        </h2>
+    <section aria-labelledby="top-titulo" className="mx-auto max-w-[1360px] px-4 pt-24 sm:px-8 lg:pt-32">
+      <div className="mb-10 flex flex-wrap items-end justify-between gap-4">
+        <div>
+          <h2
+            id="top-titulo"
+            className="text-[clamp(2.25rem,5vw,3.75rem)] leading-[1.02] font-light tracking-[-0.04em] text-brand-muted"
+          >
+            Top <span className="font-bold text-brand-700">productos</span>
+          </h2>
+          <p className="mt-2 text-[1rem] text-ink-3">Las piezas más destacadas de la tienda.</p>
+        </div>
         <Link to="/productos" className="btn btn--ghost btn--pill px-5">
           Ver todo el catálogo
           <Arrow />
@@ -394,11 +215,27 @@ export function TopProducts() {
       </div>
 
       {top.isPending ? (
-        <div className="flex justify-center">
-          <div className={`${CARD_W} h-[30rem] animate-pulse rounded-[1.5rem] bg-sunk`} />
+        <div className="grid gap-5 lg:grid-cols-12">
+          <div className="h-[30rem] animate-pulse rounded-[1.75rem] bg-sunk lg:col-span-6 lg:h-[40rem]" />
+          <div className="space-y-3 lg:col-span-6">
+            {Array.from({ length: 6 }, (_, i) => (
+              <div key={i} className="h-[5.25rem] animate-pulse rounded-[1.25rem] bg-sunk" />
+            ))}
+          </div>
         </div>
       ) : (
-        <Carousel items={items} />
+        <div className="grid gap-6 lg:grid-cols-12 lg:gap-8">
+          <div className="min-w-0 lg:col-span-6">
+            <FeatureCard product={items[0]} />
+          </div>
+          <div className="min-w-0 lg:col-span-6">
+            <ol ref={list} className="cascade" aria-label="Del puesto 2 al 7">
+              {items.slice(1).map((p, i) => (
+                <RankRow key={p.id} product={p} rank={i + 2} wait={i * 60} />
+              ))}
+            </ol>
+          </div>
+        </div>
       )}
     </section>
   )

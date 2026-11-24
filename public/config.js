@@ -7,7 +7,7 @@
 window.STORE_CONFIG = {
   // Número de WhatsApp para pedidos: código de país + número, sin "+" ni espacios.
   // Ejemplo: '51987654321'. Mientras esté vacío, el botón de WhatsApp no aparece.
-  whatsappNumber: '',
+  whatsappNumber: '51912968105',
 
   // URL de la API pública de la tienda.
   apiBaseUrl: 'https://monatekeda.app.noinventes.com/api/store',
