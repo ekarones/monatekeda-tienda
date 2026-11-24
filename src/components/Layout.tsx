@@ -572,6 +572,10 @@ export function Layout() {
   const searching = searchAt === pathname
   const closeSearch = useCallback(() => setSearchAt(null), [])
   const scrolled = useScrolled()
+  // En la portada, arriba del todo, la cabecera es parte del hero rojo (logo y texto en blanco).
+  // Al bajar o al pasar el mouse se vuelve blanca y el logo recupera su color.
+  const [hovered, setHovered] = useState(false)
+  const onRed = pathname === '/' && !scrolled && !hovered
 
   if (categories.error instanceof ApiError && categories.error.isStoreUnavailable) {
     return <StoreUnavailable />
@@ -580,14 +584,20 @@ export function Layout() {
   return (
     <div className="andean-ground flex min-h-screen flex-col overflow-x-clip">
       <header
-        // En la portada, arriba del todo, la cabecera es parte del hero rojo (texto en blanco)
-        data-onred={pathname === '/' && !scrolled}
+        data-onred={onRed}
+        onPointerEnter={(e) => {
+          // Solo mouse: en pantallas táctiles el "hover" se quedaría pegado tras tocar
+          if (e.pointerType === 'mouse') setHovered(true)
+        }}
+        onPointerLeave={() => setHovered(false)}
         className={`group/h sticky top-0 z-30 transition-[background-color,box-shadow] duration-500 ease-out-expo ${
           scrolled
             ? 'bg-surface/90 shadow-[0_12px_30px_-22px_rgb(23_22_43/0.45)] backdrop-blur-md'
-            : pathname === '/'
-              ? 'andean-tex-light bg-brand-700'
-              : 'bg-ground/85 backdrop-blur-md'
+            : pathname !== '/'
+              ? 'bg-ground/85 backdrop-blur-md'
+              : onRed
+                ? 'andean-tex-light bg-brand-700'
+                : 'bg-surface shadow-[0_12px_30px_-22px_rgb(23_22_43/0.45)]'
         }`}
       >
         {/* Misma altura que la barra (no incluye la búsqueda móvil de abajo) */}
@@ -607,7 +617,23 @@ export function Layout() {
           }`}
         >
           <Link to="/" className="flex shrink-0 items-center gap-2.5 justify-self-start" aria-label={`${config.storeName}, inicio`}>
-            <img src={`${import.meta.env.BASE_URL}logo.png`} alt="" width={40} height={40} className="h-8 w-8 sm:h-10 sm:w-10" />
+            {/* Dos logos apilados: blanco sobre el hero rojo, normal en el resto; se cruzan con un fundido */}
+            <span className="relative block h-8 w-8 sm:h-10 sm:w-10">
+              <img
+                src={`${import.meta.env.BASE_URL}logo.png`}
+                alt=""
+                width={40}
+                height={40}
+                className="h-full w-full transition-opacity duration-300 group-data-[onred=true]/h:opacity-0"
+              />
+              <img
+                src={`${import.meta.env.BASE_URL}logo-blanco.png`}
+                alt=""
+                width={40}
+                height={40}
+                className="absolute inset-0 h-full w-full opacity-0 transition-opacity duration-300 group-data-[onred=true]/h:opacity-100"
+              />
+            </span>
             <span className="text-[1.25rem] font-semibold tracking-[-0.02em] text-ink transition-colors sm:text-[1.375rem] group-data-[onred=true]/h:text-white">
               {config.storeName}
             </span>
