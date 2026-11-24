@@ -347,7 +347,7 @@ The Quechua title "Ruraq maki" in bold Deep Logo Red, with its translation «Man
 
 ### Closing Panel and Footer
 - **Closing panel:** a rounded Deep Logo Red panel with a faint wordmark, the statement "Piezas de Lima y **Puno**, en un solo lugar.", a light and an outline-light button, and the collection photo rising above the panel's top edge on desktop.
-- **Footer:** Footer Grey band with 2.5rem rounded top corners and ink text. Top row: logo with the two-tone line "Hecho a mano **en el Perú.**" beside a white "Pedidos y consultas" card whose WhatsApp row shows the number (+51 912 968 105). Then hairline-separated link columns (Tienda, Categorías from the API, Síguenos with social icons), a copyright row with "Volver arriba", and the wordmark in 70% white across the bottom, read as a relief on the grey.
+- **Footer:** Footer Grey band with 2.5rem rounded top corners and ink text. Top row: logo with the two-tone line "Hecho a mano **en el Perú.**" beside a white "Pedidos y consultas" card whose WhatsApp row shows the number (the number from config.js). Then hairline-separated link columns (Tienda, Categorías from the API, Síguenos with social icons), a copyright row with "Volver arriba", and the wordmark in 70% white across the bottom, read as a relief on the grey.
 
 ### Floating WhatsApp button
 Green circle fixed bottom right, expanding to "Escríbenos" on hover. Hidden when no WhatsApp number is configured.

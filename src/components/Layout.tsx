@@ -425,7 +425,7 @@ function Footer() {
   const wa = config.whatsappNumber
     ? `https://wa.me/${config.whatsappNumber}?text=${encodeURIComponent(`¡Hola ${config.storeName}! Tengo una consulta.`)}`
     : ''
-  // "51912968105" → "+51 912 968 105"
+  // "51975090351" → "+51 975 090 351"
   const phone = config.whatsappNumber.replace(/^(\d{2})(\d{3})(\d{3})(\d{3})$/, '+$1 $2 $3 $4')
   const heading = 'text-[0.8125rem] font-semibold text-ink'
   const item = 'inline-block py-1.5 text-[0.9375rem] text-ink-2 transition-colors hover:text-brand-700 sm:py-1'
