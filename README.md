@@ -66,7 +66,7 @@ Cada `git push` a `main` publica la tienda en **https://ekarones.github.io/monat
 
 ## Deploy (cPanel)
 
-1. Compilar y empaquetar: `npm run build` y luego `C:\Windows\System32\tar.exe -a -c -f deploy/monatekeda-tienda.zip -C dist .htaccess assets config.js index.html logo.png` (el tar de Windows; el de Git Bash no crea .zip)
+1. Compilar y empaquetar: `npm run build` y luego `C:\Windows\System32\tar.exe -a -c -f deploy/monatekeda-tienda.zip -C dist .htaccess assets config.js index.html logo-blanco.png logo.png` (el tar de Windows; el de Git Bash no crea .zip)
 2. cPanel → Administrador de archivos → `public_html` (o la carpeta del subdominio) → Cargar el zip → Extraer.
 3. Activar "Mostrar archivos ocultos" y comprobar que está `.htaccess` (hace funcionar rutas como `/productos`).
 4. Editar `config.js` en el servidor para poner el número de WhatsApp y las redes sociales (sin recompilar).
