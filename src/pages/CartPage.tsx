@@ -120,7 +120,7 @@ export function CartPage() {
                         {item.name}
                       </Link>
                       {item.variantLabel && <p className="mt-0.5 text-[0.8125rem] text-ink-3">{item.variantLabel}</p>}
-                      <p className="tnum mt-0.5 text-[0.8125rem] text-ink-3">{formatMoney(item.price, item.currency)} c/u</p>
+                      <p className="tnum mt-0.5 text-[0.8125rem] text-ink-3">{item.price > 0 ? `${formatMoney(item.price, item.currency)} c/u` : 'Precio a consultar'}</p>
                     </div>
                     <button
                       type="button"
@@ -157,7 +157,7 @@ export function CartPage() {
                       </button>
                     </div>
                     <span className="tnum text-[1.0625rem] font-semibold text-brand-700">
-                      {formatMoney(item.price * item.quantity, item.currency)}
+                      {item.price > 0 ? formatMoney(item.price * item.quantity, item.currency) : 'A consultar'}
                     </span>
                   </div>
                 </div>
@@ -201,6 +201,9 @@ export function CartPage() {
               {formatMoney(cartTotal(items), currency)}
             </span>
           </div>
+          {items.some((i) => !(i.price > 0)) && (
+            <p className="mt-1 text-right text-[0.8125rem] text-ink-3">+ piezas con precio a consultar</p>
+          )}
 
           {config.whatsappNumber ? (
             <div className="mt-6">

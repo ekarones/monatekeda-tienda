@@ -33,11 +33,11 @@ Owner-supplied figures shown on the home page: +10 years in the market, +3000 pr
 ## Capabilities and Constraints
 
 - Catalogue browsing, search, category/tag/price filters, product detail with variations, QR lookup, local cart, WhatsApp order.
-- Stock is only a boolean; ~54% of the catalogue is currently out of stock. ~1 in 6 products has no photo; most have no short description. Product copy comes from the API in Spanish only.
+- Orders are confirmed by WhatsApp, so **every product is shown as available** regardless of API stock (owner decision, 2026-11-25; `SELL_WITHOUT_STOCK` in `src/api/store.ts`). In the API, stock is only a boolean and 462 of 596 products are marked out of stock. ~1 in 6 products has no photo; most have no short description. Product copy comes from the API in Spanish only.
 - Rate limit 120 req/min per IP. No customer accounts yet.
 - Language: **Spanish only** for now (confirmed), despite foreign tourists being a primary audience.
 - Store name, tagline, WhatsApp number and social links (Instagram, Facebook, TikTok) live in `public/config.js` (editable on the server without rebuilding) until a `/api/store/info` endpoint exists. The WhatsApp number and the social links are still empty; WhatsApp actions fall back to the Contacto page and social icons render without links.
-- "Top productos" uses a temporary selection (highest-priced, in-stock, with photo) until the API provides a ranking endpoint.
+- "Top productos" uses a temporary selection (highest-priced, with photo) until the API provides a ranking endpoint.
 
 ## Brand Commitments
 
@@ -54,7 +54,7 @@ Owner-supplied figures shown on the home page: +10 years in the market, +3000 pr
 
 1. Trust first: make handmade, origin and material legible; never overstate.
 2. Phone in hand, in the shop: the QR → product → WhatsApp path must be fast and clear on mobile.
-3. Honest availability: out-of-stock is shown plainly but must not make the catalogue feel empty.
+3. Made-to-order availability: everything can be requested; availability, price and delivery are confirmed by WhatsApp, and the cart says so.
 4. Spanish only, written simply enough for visitors who read Spanish as a second language.
 
 ## Accessibility & Inclusion

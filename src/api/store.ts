@@ -15,15 +15,26 @@ type Data<T> = { data: T }
 
 const MINUTE = 60_000
 
+/**
+ * Tienda por pedido: todo se ofrece como disponible, aunque la API lo marque agotado, porque la
+ * disponibilidad se confirma por WhatsApp. Con `false` vuelve a respetarse el stock de la API.
+ */
+const SELL_WITHOUT_STOCK = true
+const available = <T extends { in_stock: boolean }>(item: T): T =>
+  SELL_WITHOUT_STOCK ? { ...item, in_stock: true } : item
+
 export const storeApi = {
   products: (filters: ProductFilters, signal?: AbortSignal) =>
-    apiGet<Paginated<ProductSummary>>('/products', { ...filters }, signal),
+    apiGet<Paginated<ProductSummary>>('/products', { ...filters }, signal).then((r) => ({
+      ...r,
+      data: r.data.map(available),
+    })),
   featured: (signal?: AbortSignal) =>
-    apiGet<Data<ProductSummary[]>>('/products/featured', undefined, signal).then((r) => r.data),
+    apiGet<Data<ProductSummary[]>>('/products/featured', undefined, signal).then((r) => r.data.map(available)),
   product: (codeOrSlug: string, signal?: AbortSignal) =>
-    apiGet<Data<ProductDetail>>(`/products/${seg(codeOrSlug)}`, undefined, signal).then((r) => r.data),
+    apiGet<Data<ProductDetail>>(`/products/${seg(codeOrSlug)}`, undefined, signal).then((r) => available(r.data)),
   variations: (codeOrSlug: string, signal?: AbortSignal) =>
-    apiGet<Data<Variation[]>>(`/products/${seg(codeOrSlug)}/variations`, undefined, signal).then((r) => r.data),
+    apiGet<Data<Variation[]>>(`/products/${seg(codeOrSlug)}/variations`, undefined, signal).then((r) => r.data.map(available)),
   categories: (signal?: AbortSignal) =>
     apiGet<Data<Category[]>>('/categories', undefined, signal).then((r) => r.data),
   tags: (signal?: AbortSignal) => apiGet<Data<Tag[]>>('/tags', undefined, signal).then((r) => r.data),

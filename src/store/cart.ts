@@ -1,7 +1,7 @@
 import { create } from 'zustand'
 import { createJSONStorage, persist } from 'zustand/middleware'
 import { config } from '../config'
-import { formatMoney } from '../lib/format'
+import { formatMoney, formatPrice } from '../lib/format'
 
 export interface CartItem {
   /** `${productId}` o `${productId}:${variationId}` */
@@ -76,14 +76,16 @@ export function buildOrderMessage(items: CartItem[]) {
   const count = cartCount(items)
   const lines = items.map((i) => {
     const variant = i.variantLabel ? ` (${i.variantLabel})` : ''
-    return `• ${i.quantity} x ${i.name}${variant}\n   Cód. ${i.code} · ${formatMoney(i.price * i.quantity, i.currency)}`
+    return `• ${i.quantity} x ${i.name}${variant}\n   Cód. ${i.code} · ${formatPrice(i.price * i.quantity, i.currency)}`
   })
+  // Piezas sin precio en el catálogo: el total no las incluye y se avisa
+  const pending = items.some((i) => !(i.price > 0)) ? ' + piezas con precio a consultar' : ''
   return [
     `¡Hola ${config.storeName}! Quiero hacer este pedido:`,
     '',
     ...lines,
     '',
-    `*Total: ${formatMoney(cartTotal(items), currency)}* (${count} ${count === 1 ? 'pieza' : 'piezas'})`,
+    `*Total: ${formatMoney(cartTotal(items), currency)}*${pending} (${count} ${count === 1 ? 'pieza' : 'piezas'})`,
   ].join('\n')
 }
 

@@ -6,7 +6,7 @@ import { useProduct, useVariations } from '../api/store'
 import type { ProductDetail, Variation } from '../api/types'
 import { ProductImage } from '../components/ProductImage'
 import { ErrorState, NotFound, Spinner } from '../components/States'
-import { cleanName, formatMoney, formatPresentation, formatPriceRange } from '../lib/format'
+import { cleanName, formatPresentation, formatPrice, formatPriceRange } from '../lib/format'
 import {
   findVariation,
   groupAttributes,
@@ -115,7 +115,7 @@ function ProductView({ product, preselect }: { product: ProductDetail; preselect
   const name = cleanName(product.name)
   const inStock = isVariable ? (variation ? variation.in_stock : product.in_stock) : product.in_stock
   const needsSelection = isVariable && list.length > 0 && !variation
-  const canBuy = inStock && !needsSelection && !(isVariable && variations.isPending)
+  const canBuy = inStock && !needsSelection && !(isVariable && !variations.isSuccess)
   const presentation = formatPresentation(product.unit_value, product.unit_of_measure)
 
   const handleAdd = () => {
@@ -156,7 +156,7 @@ function ProductView({ product, preselect }: { product: ProductDetail; preselect
 
         <p className="mt-4 text-2xl font-semibold text-brand-700">
           {variation
-            ? formatMoney(variation.final_price, variation.currency)
+            ? formatPrice(variation.final_price, variation.currency)
             : formatPriceRange(product.price_range, product.currency)}
         </p>
         <p className={`mt-1 text-sm font-medium ${inStock ? 'text-emerald-700' : 'text-stone-500'}`}>

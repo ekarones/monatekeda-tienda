@@ -11,9 +11,13 @@ export function formatMoney(amount: number, currency = 'PEN') {
   return fmt.format(amount)
 }
 
+/** Precio de una pieza: si el catálogo aún no lo tiene (0), se consulta en vez de mostrar "S/ 0.00". */
+export const formatPrice = (amount: number, currency = 'PEN') =>
+  amount > 0 ? formatMoney(amount, currency) : 'Precio a consultar'
+
 /** "S/ 39.90" si el precio es único, "Desde S/ 25.00" si varía. */
 export function formatPriceRange(range: PriceRange, currency = 'PEN') {
-  if (range.min === range.max) return formatMoney(range.min, currency)
+  if (range.min === range.max) return formatPrice(range.min, currency)
   return `Desde ${formatMoney(range.min, currency)}`
 }
 

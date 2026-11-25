@@ -56,7 +56,7 @@ PRODUCT.md          contexto del negocio y del público
 - Las URLs usan el `slug`, nunca el `code` (muchos códigos llevan `#`).
 - Categorías siempre con `include_descendants=1`; tags por `tag_id` (slug solo en la URL).
 - Reintentos solo en red/429/5xx; 404 sin body = tienda deshabilitada.
-- "Top productos" es una selección temporal (precio más alto, en stock y con foto) hasta que la API tenga un endpoint de ranking: solo hay que cambiar el `queryFn` de `useTopProducts`.
+- "Top productos" es una selección temporal (precio más alto y con foto) hasta que la API tenga un endpoint de ranking: solo hay que cambiar el `queryFn` de `useTopProducts`.
 - El hero usa la foto de estudio + un recorte de sus productos (`hero-centro-cut.webp`) para que la palabra "monatekeda" quede detrás de las piezas. Si se cambia la foto, hay que regenerar el recorte.
 - La portada hace 10 pedidos a la API al cargar (límite: 120/min por IP).
 
