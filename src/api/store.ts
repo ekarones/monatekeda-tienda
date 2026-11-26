@@ -16,10 +16,10 @@ type Data<T> = { data: T }
 const MINUTE = 60_000
 
 /**
- * Tienda por pedido: todo se ofrece como disponible, aunque la API lo marque agotado, porque la
- * disponibilidad se confirma por WhatsApp. Con `false` vuelve a respetarse el stock de la API.
+ * Stock: los agotados se muestran como "Agotado" y no se pueden agregar al carrito.
+ * Con `true` todo se ofrece como disponible (tienda por pedido: la disponibilidad se confirma por WhatsApp).
  */
-const SELL_WITHOUT_STOCK = true
+const SELL_WITHOUT_STOCK = false
 const available = <T extends { in_stock: boolean }>(item: T): T =>
   SELL_WITHOUT_STOCK ? { ...item, in_stock: true } : item
 

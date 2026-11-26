@@ -1091,7 +1091,7 @@ function SeriesGrid({ series, pending, error, retry }: ReturnType<typeof useSeri
         >
           Piezas <span className="font-bold text-brand-700">disponibles</span>
         </h2>
-        <p className="mt-3 text-[1rem] text-ink-3">Con foto y listas para pedir.</p>
+        <p className="mt-3 text-[1rem] text-ink-3">En stock y con foto, listas para pedir.</p>
         <StepBand className="mt-6 hidden w-32 text-brand-600 lg:block" />
 
       {/* Filtro por material: píldoras que se desplazan en móvil; lista vertical en escritorio */}
@@ -1142,7 +1142,7 @@ function SeriesGrid({ series, pending, error, retry }: ReturnType<typeof useSeri
           <ErrorState error={failed} onRetry={source ? () => filtered.refetch() : retry} />
         ) : !loading && items.length === 0 ? (
           <p className="rounded-[1.25rem] bg-surface px-6 py-12 text-center text-ink-3">
-            Por ahora no hay piezas con foto en este material.{' '}
+            Por ahora no hay piezas disponibles con foto en este material.{' '}
             <Link to={more} className="font-medium text-brand-700 underline underline-offset-4">
               Ver en el catálogo
             </Link>

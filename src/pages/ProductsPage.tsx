@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react'
 import { Link, useSearchParams } from 'react-router'
+import { useSmartSearch, type SearchSort } from '../api/search'
 import { useCategories, useProducts, useTags } from '../api/store'
 import type { Category, ProductFilters, ProductSort } from '../api/types'
 import { Pagination } from '../components/Pagination'
@@ -8,7 +9,8 @@ import { EmptyState, ErrorState } from '../components/States'
 
 const PER_PAGE = 24
 
-const SORTS: { value: ProductSort; label: string }[] = [
+const SORTS: { value: SearchSort; label: string }[] = [
+  { value: 'relevance', label: 'Más relevantes' },
   { value: 'newest', label: 'Más recientes' },
   { value: 'price_asc', label: 'Precio: menor a mayor' },
   { value: 'price_desc', label: 'Precio: mayor a menor' },
@@ -135,7 +137,12 @@ export function ProductsPage() {
   const tagSlug = params.get('tag') ?? undefined
   const priceMin = toNumber(params.get('min'))
   const priceMax = toNumber(params.get('max'))
-  const sort = (SORTS.some((s) => s.value === params.get('orden')) ? params.get('orden') : 'newest') as ProductSort
+  // Con búsqueda, el orden por defecto es por relevancia; sin búsqueda, los más recientes
+  const defaultSort: SearchSort = q ? 'relevance' : 'newest'
+  const sortParam = params.get('orden')
+  const sort = (
+    SORTS.some((s) => s.value === sortParam) && (q || sortParam !== 'relevance') ? sortParam : defaultSort
+  ) as SearchSort
   const page = Math.max(1, toNumber(params.get('page')) ?? 1)
 
   const tag = tagSlug ? tags.data?.find((t) => t.slug === tagSlug) : undefined
@@ -150,11 +157,27 @@ export function ProductsPage() {
     tag: tagSlug && !tag && !tags.isPending ? tagSlug : undefined,
     price_min: priceMin,
     price_max: priceMax,
-    sort,
+    sort: sort === 'relevance' ? undefined : (sort as ProductSort),
     page,
     per_page: PER_PAGE,
   }
-  const products = useProducts(filters, !(tagSlug && tags.isPending))
+  const listing = useProducts(filters, !q && !(tagSlug && tags.isPending))
+  // Con texto de búsqueda: búsqueda inteligente (plurales, sinónimos, categorías, relevancia)
+  const search = useSmartSearch(
+    q,
+    {
+      category_id: categoryId,
+      include_descendants: categoryId ? true : undefined,
+      tag_id: tag?.id,
+      tag: filters.tag,
+      price_min: priceMin,
+      price_max: priceMax,
+    },
+    sort,
+    page,
+    PER_PAGE,
+  )
+  const products = q ? search : listing
 
   const categoryPath = useMemo(
     () => (categoryId && categories.data ? findPath(categories.data, categoryId) : null),
@@ -218,7 +241,7 @@ export function ProductsPage() {
       </div>
       {hasFilters && (
         <button
-          onClick={() => setParams(new URLSearchParams(sort !== 'newest' ? { orden: sort } : {}))}
+          onClick={() => setParams(new URLSearchParams(sort !== defaultSort && sort !== 'relevance' ? { orden: sort } : {}))}
           className="text-sm font-medium text-brand-700 hover:underline"
         >
           Limpiar filtros
@@ -261,11 +284,11 @@ export function ProductsPage() {
           </button>
           <select
             value={sort}
-            onChange={(e) => update({ orden: e.target.value === 'newest' ? undefined : e.target.value })}
+            onChange={(e) => update({ orden: e.target.value === defaultSort ? undefined : e.target.value })}
             aria-label="Ordenar por"
             className="rounded-full border border-stone-200 bg-white px-4 py-2 text-sm outline-none focus:border-brand-500"
           >
-            {SORTS.map((s) => (
+            {SORTS.filter((s) => q || s.value !== 'relevance').map((s) => (
               <option key={s.value} value={s.value}>
                 {s.label}
               </option>
@@ -288,10 +311,34 @@ export function ProductsPage() {
             <ErrorState error={products.error} onRetry={() => products.refetch()} />
           ) : products.data.data.length === 0 ? (
             <EmptyState title="No encontramos productos">
-              <p>Prueba con otra búsqueda o quita algunos filtros.</p>
+              {q && search.data?.suggestion ? (
+                <p>
+                  ¿Quisiste decir{' '}
+                  <Link
+                    to={`/productos?q=${encodeURIComponent(search.data.suggestion)}`}
+                    className="font-semibold text-brand-700 underline underline-offset-4"
+                  >
+                    {search.data.suggestion}
+                  </Link>
+                  ?
+                </p>
+              ) : (
+                <p>Prueba con otra búsqueda o quita algunos filtros.</p>
+              )}
             </EmptyState>
           ) : (
             <>
+              {q && search.data?.corrected && (
+                <p className="mb-4 rounded-xl bg-surface px-4 py-3 text-[0.9375rem] text-ink-2">
+                  No encontramos «{q}». Te mostramos resultados para{' '}
+                  <strong className="font-semibold text-ink">{search.data.corrected}</strong>.
+                </p>
+              )}
+              {q && search.data?.partial && !search.data.corrected && (
+                <p className="mb-4 rounded-xl bg-surface px-4 py-3 text-[0.9375rem] text-ink-2">
+                  No encontramos piezas con todas las palabras de «{q}». Te mostramos las más parecidas.
+                </p>
+              )}
               <ProductGrid>
                 {products.data.data.map((p) => (
                   <ProductCard key={p.id} product={p} />
