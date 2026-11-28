@@ -40,6 +40,7 @@ export function ProductCard({ product, eager = false }: CardProps) {
   const add = useCart((s) => s.add)
   const [added, setAdded] = useState(false)
   const href = `/producto/${product.slug}`
+  const photo = product.image_thumb_url ?? product.image_url
 
   const addSimple = () => {
     add({
@@ -51,7 +52,7 @@ export function ProductCard({ product, eager = false }: CardProps) {
       variantLabel: null,
       price: product.price_range.min,
       currency: product.currency,
-      imageUrl: product.image_thumb_url ?? product.image_url,
+      imageUrl: photo,
     })
     setAdded(true)
     setTimeout(() => setAdded(false), 2000)
@@ -61,7 +62,7 @@ export function ProductCard({ product, eager = false }: CardProps) {
     <article className="group flex w-full flex-col rounded-[1.25rem] bg-surface p-2 shadow-[0_16px_34px_-26px_rgb(23_22_43/0.45)] transition-[transform,box-shadow] duration-500 ease-out-expo hover:-translate-y-1 hover:shadow-[0_26px_44px_-24px_rgb(23_22_43/0.5)]">
       <Link to={href} className="relative block overflow-hidden rounded-[0.875rem] bg-sunk" tabIndex={-1} aria-hidden="true">
         <ProductImage
-          src={product.image_thumb_url ?? product.image_url}
+          src={photo}
           alt={name}
           loading={eager ? 'eager' : 'lazy'}
           className={`aspect-square w-full transition-transform duration-[900ms] ease-out-expo group-hover:scale-[1.05] ${

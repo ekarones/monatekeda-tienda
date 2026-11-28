@@ -18,33 +18,97 @@ import {
 } from '../lib/variations'
 import { useCart } from '../store/cart'
 
+const Chevron = ({ dir }: { dir: 'left' | 'right' }) => (
+  <svg viewBox="0 0 16 16" width={16} height={16} aria-hidden="true">
+    <path
+      d={dir === 'left' ? 'm10 3-5 5 5 5' : 'm6 3 5 5-5 5'}
+      fill="none"
+      stroke="currentColor"
+      strokeWidth={1.8}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+  </svg>
+)
+
+/**
+ * Galería de la ficha (producto simple o padre): foto grande, flechas y contador, y miniaturas.
+ * Si la variación elegida tiene su propia foto, se muestra esa; al tocar una miniatura se vuelve a la galería.
+ */
 function Gallery({ product, override }: { product: ProductDetail; override?: string | null }) {
   const images = product.images.length
     ? product.images
     : product.image_url
       ? [{ id: 0, url: product.image_url, thumb_url: product.image_thumb_url, is_featured: true }]
       : []
+  // La API ya manda la galería ordenada (is_featured primero, luego sort_order). El orden estable
+  // solo asegura que la principal quede primera si algún día no viniera así.
+  const ordered = [...images].sort((a, b) => Number(b.is_featured) - Number(a.is_featured))
   const [active, setActive] = useState(0)
+  // Foto de variación que la persona ya dejó atrás tocando la galería
+  const [dismissed, setDismissed] = useState<string | null>(null)
   const name = cleanName(product.name)
-  const main = override ?? images[active]?.url ?? null
+  const showOverride = Boolean(override) && override !== dismissed
+  const main = showOverride ? override! : (ordered[active]?.url ?? null)
+  const many = ordered.length > 1
+
+  const go = (i: number) => {
+    setActive((i + ordered.length) % ordered.length)
+    setDismissed(override ?? null)
+  }
 
   return (
     <div>
-      <ProductImage src={main} alt={name} loading="eager" className="aspect-square w-full rounded-2xl" />
-      {images.length > 1 && (
-        <div className="mt-3 flex gap-2 overflow-x-auto">
-          {images.map((img, i) => (
-            <button
-              key={img.id}
-              onClick={() => setActive(i)}
-              aria-label={`Ver imagen ${i + 1}`}
-              className={`h-16 w-16 shrink-0 overflow-hidden rounded-lg border-2 ${
-                i === active && !override ? 'border-brand-700' : 'border-transparent'
-              }`}
-            >
-              <ProductImage src={img.thumb_url ?? img.url} alt="" className="h-full w-full" />
-            </button>
-          ))}
+      <div className="group relative">
+        <ProductImage
+          key={main ?? 'vacia'}
+          src={main}
+          alt={many && !showOverride ? `${name}, foto ${active + 1} de ${ordered.length}` : name}
+          loading="eager"
+          className="fade-in aspect-square w-full rounded-2xl"
+        />
+        {many && (
+          <>
+            {(['left', 'right'] as const).map((dir) => (
+              <button
+                key={dir}
+                type="button"
+                onClick={() => go(showOverride ? active : active + (dir === 'left' ? -1 : 1))}
+                aria-label={dir === 'left' ? 'Foto anterior' : 'Foto siguiente'}
+                className={`absolute top-1/2 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full bg-surface/90 text-ink shadow-[0_10px_22px_-14px_rgb(23_22_43/0.6)] backdrop-blur transition-[opacity,background-color,color] hover:bg-brand-600 hover:text-white sm:opacity-0 sm:group-hover:opacity-100 sm:focus-visible:opacity-100 ${
+                  dir === 'left' ? 'left-3' : 'right-3'
+                }`}
+              >
+                <Chevron dir={dir} />
+              </button>
+            ))}
+            {!showOverride && (
+              <span className="tnum absolute right-3 bottom-3 rounded-full bg-ink/75 px-2.5 py-1 text-[0.75rem] font-medium text-white">
+                {active + 1} / {ordered.length}
+              </span>
+            )}
+          </>
+        )}
+      </div>
+      {many && (
+        <div className="mt-3 flex gap-2 overflow-x-auto pb-1" role="group" aria-label="Fotos del producto">
+          {ordered.map((img, i) => {
+            const current = i === active && !showOverride
+            return (
+              <button
+                key={img.id}
+                type="button"
+                onClick={() => go(i)}
+                aria-label={`Ver foto ${i + 1}`}
+                aria-current={current}
+                className={`h-16 w-16 shrink-0 overflow-hidden rounded-xl border-2 transition-[border-color,opacity] sm:h-20 sm:w-20 ${
+                  current ? 'border-brand-600' : 'border-transparent opacity-70 hover:opacity-100'
+                }`}
+              >
+                <ProductImage src={img.thumb_url ?? img.url} alt="" className="h-full w-full" />
+              </button>
+            )
+          })}
         </div>
       )}
     </div>
